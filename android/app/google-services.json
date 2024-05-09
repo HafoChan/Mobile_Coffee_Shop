@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "767447950358",
+    "project_id": "coffeandcake-d9b19",
+    "storage_bucket": "coffeandcake-d9b19.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:767447950358:android:083d20fb8cbe9ba3524137",
+        "android_client_info": {
+          "package_name": "com.finalproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJyUfL1GcafKk5ZnRL_LHZU7sTSD_jA4M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
