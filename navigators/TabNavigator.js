@@ -22,7 +22,7 @@ const TabNavigator = () => {
                 tabBarShowLabel: false,
                 tabBarStyle: styles.footer
             }}>
-            <Tab.Screen name='Home' component={Home} options={{
+            <Tab.Screen name='Home' component={Home}  options={{
                 tabBarIcon: ({focused, color, size}) => {     
                     return <Image source={icons.home} style={styles.icon26} tintColor={focused?colors.primary:colors.black}/>
                 }

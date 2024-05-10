@@ -4,31 +4,30 @@ import { icons, colors } from "../constants"
 import {ItemBlendedIce_Yogurt, ItemCoffee_Other} from "../components"
 import { useRoute } from '@react-navigation/native';
 import { fetchData } from '../getData';
+import { doc } from 'firebase/firestore';
 
 
 const Category = () => {
-
+    const route = useRoute();
+    const [selectedTab, setSelectedTab] = useState('drinks');
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        fetchData().then(fetchedData => {
-            setData(fetchedData);
-        }).catch(error => {
-            console.error('Failed to fetch data:', error);
-        });
+        fetchData()
+            .then(fetchedData => {
+                console.log(fetchedData)
+                setData(fetchedData);
+            })
     }, []);
-
-    // Trước khi bóc tách, kiểm tra nếu dữ liệu có sẵn
+    
     if (!data) {
-        return <Text>Loading...</Text>; // Hoặc bất kỳ chỉ báo trạng thái tải nào khác
+        return <Text>Loading...</Text>; // Hiển thị thông báo tải
     }
 
-    const { description, id, imgUrl, name, size } = data;
-
-    console.log(data)
+    // Trước khi bóc tách, kiểm tra nếu dữ liệu có sẵn
+ 
+console.log(data)
     
-    const [mediumSize, largeSize] = size
-    console.log(description)
     //console.log(size)
     const [coffeeItems, setCoffeeItems] = useState([
         { id: '1', icon: icons.hotCoffee, name: 'Cà phê nóng', active: false },
@@ -42,28 +41,9 @@ const Category = () => {
         { id: '2', icon: icons.iceCream, name: 'Kem', active: false }
     ]);
 
-    const route = useRoute();
-    const [selectedTab, setSelectedTab] = useState('drinks');
 
-    useEffect(() => {
-        if (route.params?.selectedCategory && route.params?.id) {
-            if (route.params.selectedCategory === 'drinks') {
-                const updatedCoffeeItems = coffeeItems.map(item => ({
-                    ...item,
-                    active: item.id === route.params.id
-                }));
-                setCoffeeItems(updatedCoffeeItems);
-            } else if (route.params.selectedCategory === 'desserts') {
-                const updatedDessertItems = dessertItems.map(item => ({
-                    ...item,
-                    active: item.id === route.params.id
-                }));
-                setDessertItems(updatedDessertItems);
-            }
-            setSelectedTab(route.params.selectedCategory);
-        }
-    }, [route.params?.selectedCategory, route.params?.id]);
 
+    
     const pressCategory = (category, id) => {
         let updatedCoffeeItems;
         let updatedDessertItems;
@@ -141,9 +121,9 @@ const Category = () => {
             <View style={styles.itemContainer}>
             {data && ( // Render content only if data is available
             <>
-                <ItemCoffee_Other name={name} imgUrl={imgUrl} price={mediumSize.price}/>
-                <ItemCoffee_Other name={name} imgUrl={imgUrl} price={mediumSize.price}/>
-                <ItemCoffee_Other name={name} imgUrl={imgUrl} price={mediumSize.price}/>
+                <ItemCoffee_Other/>
+                <ItemCoffee_Other/>
+                <ItemCoffee_Other/>
             </>
             )}
             {!data && ( // Display loading indicator or message if no data
@@ -153,6 +133,7 @@ const Category = () => {
         </ScrollView>
     </View>
 }
+
 
 
 
