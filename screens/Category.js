@@ -8,9 +8,9 @@ const Category = () => {
 
     const coffeeItems = [
         { id: '1', icon: icons.hotCoffee, name: 'Cà phê nóng', active: true },
-        { id: '2', icon: icons.iceCoffee, name: 'Cà phê đá', active: false },
+        { id: '2', icon: icons.iceCoffee, name: 'Cà phê đá', active: true },
         { id: '3', icon: icons.blendedIce, name: 'Đá xay - Yogurt', active: true },
-        { id: '4', icon: icons.drink, name: 'Thức uống khác', active: false }
+        { id: '4', icon: icons.drink, name: 'Thức uống khác', active: true }
     ];
     
     const dessertItems = [
