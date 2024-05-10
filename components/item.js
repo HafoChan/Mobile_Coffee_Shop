@@ -1,17 +1,18 @@
 import { StyleSheet, Image, Text, TouchableOpacity, View} from "react-native"
 import { images, icons, colors } from "../constants"
-
+import { fetchData } from "../getData"
 export {
     ItemCoffee_Other,
     ItemBlendedIce_Yogurt
 }
 
 const heightItem = 240
-
+const Drink = fetchData();
+console.log(Drink)
 const ItemCoffee_Other = (props) => {
     return <TouchableOpacity style={stylesOtherItem.itemContainer}>
         <View style={stylesOtherItem.imageContainer}>
-            <Image source={images.item5} style={stylesOtherItem.image}/>
+            <Image source={Drink.imgUrl} style={stylesOtherItem.image}/>
         </View>
         <View style={stylesOtherItem.itemDetailContainer}>
             <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>Coffee đá</Text>
