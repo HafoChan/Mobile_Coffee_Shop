@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { colors } from '../constants';
 
 const ExpandableText = ({ text, maxLength = 100 }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -25,10 +26,12 @@ const styles = StyleSheet.create({
         padding: 10
     },
     text: {
-        color: 'black'
+        fontSize: 17,
+        fontWeight: '500',
     },
     buttonText: {
-        color: 'blue',
+        color: colors.third,
+        fontSize: 15,
         marginTop: 5
     }
 });

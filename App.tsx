@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator();
 const App = () => {
   return <NavigationContainer>
     <Stack.Navigator screenOptions={{headerShown : false}}>
-        {/* <Stack.Screen name='TabNavigator' component={TabNavigator} options={{animation: 'slide_from_bottom'}}/> */}
+        <Stack.Screen name='TabNavigator' component={TabNavigator} options={{animation: 'slide_from_bottom'}}/>
         <Stack.Screen name='Detail' component={Detail} options={{animation: 'slide_from_bottom'}}/>
     </Stack.Navigator>
   </NavigationContainer>

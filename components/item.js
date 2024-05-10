@@ -1,28 +1,27 @@
 import { StyleSheet, Image, Text, TouchableOpacity, View} from "react-native"
 import { images, icons, colors } from "../constants"
-import { fetchData } from "../getData"
 export {
     ItemCoffee_Other,
     ItemBlendedIce_Yogurt
 }
 
 const heightItem = 240
-const Drink = fetchData();
-console.log(Drink)
+
 const ItemCoffee_Other = (props) => {
+    const {name, imgUrl, price} = props
     return <TouchableOpacity style={stylesOtherItem.itemContainer}>
         <View style={stylesOtherItem.imageContainer}>
-            <Image source={Drink.imgUrl} style={stylesOtherItem.image}/>
+            <Image src={imgUrl} style={stylesOtherItem.image}/>
         </View>
         <View style={stylesOtherItem.itemDetailContainer}>
-            <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>Coffee đá</Text>
+            <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>{name}</Text>
             <View style={stylesOtherItem.favoriteAndPriceContainer}>
                 <View>
                     <View style={stylesOtherItem.favoriteContainer}>
                         <Text style={styles.favoriteText}>200k</Text>
                         <Image source={icons.heart} style={[styles.favoriteIcon, {marginLeft: 5}]}/>
                     </View>
-                    <Text style={styles.itemPrice}>20,000 VNĐ</Text>
+                    <Text style={styles.itemPrice}>{price}</Text>
                 </View>
                 <TouchableOpacity>
                 <Image source={icons.addToCart} tintColor={colors.black} style={[styles.addIcon]}/>

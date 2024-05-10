@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, TouchableOpacity, View, ImageBackground } from "react-native";
+import { StyleSheet, Image, Text, TouchableOpacity, View, ImageBackground, ScrollView } from "react-native";
 import { colors, icons, images } from "../constants";
 import { useState } from "react";
 import { ExpandableText } from "../components";
@@ -36,7 +36,7 @@ const Detail = () => {
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.detailsContainer}>
+            <ScrollView style={styles.detailsContainer} showsVerticalScrollIndicator={false}>
                 <View style={styles.detailContent}>
                     <View style={styles.titleContainer}>
                         <Text style={styles.title}>Coffee Latte</Text>
@@ -86,7 +86,7 @@ const Detail = () => {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>
+            </ScrollView>
         </View>
     );
 }
@@ -125,9 +125,10 @@ const styles = StyleSheet.create({
         width: 26,
     },
     detailsContainer: {
-        height: '55%',
+        height: '53%',
         backgroundColor: colors.item,
-        borderRadius: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20
     },
     detailContent: {
         margin: 25,
@@ -167,7 +168,6 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 17,
         fontWeight: '500',
-        color: colors.lightgrey,
     },
     selectionRow: {
         flexDirection: 'row',

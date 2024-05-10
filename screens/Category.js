@@ -1,12 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Image, Text, TouchableOpacity, View, ScrollView, FlatList } from "react-native"
 import { icons, colors } from "../constants"
-import {ItemBlendedIce_Yogurt, ItemCoffee_Other, Header} from "../components"
+import {ItemBlendedIce_Yogurt, ItemCoffee_Other} from "../components"
 import { useRoute } from '@react-navigation/native';
+import { fetchData } from '../getData';
 
 
 const Category = () => {
 
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        fetchData().then(fetchedData => {
+            setData(fetchedData);
+        }).catch(error => {
+            console.error('Failed to fetch data:', error);
+        });
+    }, []);
+
+    // Trước khi bóc tách, kiểm tra nếu dữ liệu có sẵn
+    if (!data) {
+        return <Text>Loading...</Text>; // Hoặc bất kỳ chỉ báo trạng thái tải nào khác
+    }
+
+    const { description, id, imgUrl, name, size } = data;
+
+    console.log(data)
+    
+    const [mediumSize, largeSize] = size
+    console.log(description)
+    //console.log(size)
     const [coffeeItems, setCoffeeItems] = useState([
         { id: '1', icon: icons.hotCoffee, name: 'Cà phê nóng', active: false },
         { id: '2', icon: icons.iceCoffee, name: 'Cà phê đá', active: false },
@@ -116,17 +139,21 @@ const Category = () => {
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
             <View style={styles.itemContainer}>
-                <ItemBlendedIce_Yogurt/>
-                <ItemCoffee_Other/>
-                <ItemCoffee_Other/>
-                <ItemCoffee_Other/>
-                <ItemCoffee_Other/>
-                <ItemCoffee_Other/>
-                <ItemCoffee_Other/>
+            {data && ( // Render content only if data is available
+            <>
+                <ItemCoffee_Other name={name} imgUrl={imgUrl} price={mediumSize.price}/>
+                <ItemCoffee_Other name={name} imgUrl={imgUrl} price={mediumSize.price}/>
+                <ItemCoffee_Other name={name} imgUrl={imgUrl} price={mediumSize.price}/>
+            </>
+            )}
+            {!data && ( // Display loading indicator or message if no data
+                <Text>Đang tải...</Text>
+            )}
             </View>
         </ScrollView>
     </View>
 }
+
 
 
 const styles = StyleSheet.create({
