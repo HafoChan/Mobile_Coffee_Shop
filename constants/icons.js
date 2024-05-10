@@ -16,7 +16,10 @@ export default {
     plus: require('../assets/plus.png'),
     bin: require('../assets/bin.png'),
     addToCart: require('../assets/add-to-cart.png'),
-    
+    sizeM: require('../assets/sizeM.png'),
+    sizeL: require('../assets/sizeL.png'),
+
+
     drink: require('../assets/drink.png'),
     hotCoffee: require('../assets/hot-coffee.png'),
     iceCoffee: require('../assets/ice-coffee.png'),

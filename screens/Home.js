@@ -1,5 +1,6 @@
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { colors, icons, images } from "../constants"
+import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
 
@@ -15,8 +16,15 @@ const Home = () => {
         { id: '2', icon: icons.iceCream, name: 'Kem' }
     ];
 
-    const MenuItem = ({ icon, name }) => (
-        <TouchableOpacity style={styles.item}>
+    const navigation = useNavigation()
+
+    const PressCategory = (category, id) => {
+        navigation.navigate('Category', { selectedCategory: category, id: id })
+    }
+
+    const MenuItem = ({ category, id, icon, name }) => (
+        <TouchableOpacity style={styles.item} 
+        onPress={() => PressCategory(category, id)}>
             <Image source={icon} style={styles.itemIcon}/>
             <Text style={styles.itemText} numberOfLines={1} ellipsizeMode='tail'>{name}</Text>
         </TouchableOpacity>
@@ -32,11 +40,11 @@ const Home = () => {
                 <Image source={images.banner1} style={styles.banner}/>
             </View>
 
-            <View style={{height: '12%', width: '100%'}}>
-                <Text style={{fontSize: 18, fontWeight: '500', marginStart: 15}}>Tìm ngay thức uống yêu thích của bạn!</Text>
-                <View style={{flexDirection: 'row', alignItems: 'center', borderRadius: 25, marginEnd: 10, marginTop: 10, backgroundColor: colors.secondary}}>
-                    <Image source={icons.search} style={{height: 24, width: 24, marginStart: 20, marginEnd: 10}}/>
-                    <TextInput placeholder="Tìm kiếm" style={{fontSize: 17}}/>
+            <View style={styles.searchContainer}>
+                <Text style={styles.searchTitle}>Tìm ngay thức uống yêu thích của bạn!</Text>
+                <View style={styles.searchInputContainer}>
+                    <Image source={icons.search} style={styles.searchIcon}/>
+                    <TextInput placeholder="Tìm kiếm" style={styles.searchInput}/>
                 </View>
             </View>
 
@@ -47,7 +55,7 @@ const Home = () => {
                 </TouchableOpacity>
             </View>
             <View style={styles.itemContainer}>
-                {coffeeItems.map(item => <MenuItem key={item.id} icon={item.icon} name={item.name} />)}
+                {coffeeItems.map(item => <MenuItem key={item.id} category={'drinks'} id={item.id} icon={item.icon} name={item.name} />)}
             </View>
 
             <View style={styles.sectionHeader}>
@@ -57,7 +65,7 @@ const Home = () => {
                 </TouchableOpacity>
             </View>
             <View style={styles.itemContainer}>
-                {dessertItems.map(item => <MenuItem key={item.id} icon={item.icon} name={item.name} />)}
+                {dessertItems.map(item => <MenuItem key={item.id} category={'desserts'} id={item.id} icon={item.icon} name={item.name} />)}
             </View>
         </View>
 
@@ -145,6 +153,33 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: colors.black
     },
+    searchContainer: {
+        height: '12%',
+        width: '100%'
+    },
+    searchTitle: {
+        fontSize: 16,
+        fontWeight: '500',
+        marginStart: 15,
+        color: colors.primary
+    },
+    searchInputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderRadius: 25,
+        marginEnd: 10,
+        marginTop: 10,
+        backgroundColor: colors.secondary
+    },
+    searchIcon: {
+        height: 24,
+        width: 24,
+        marginStart: 20,
+        marginEnd: 10
+    },
+    searchInput: {
+        fontSize: 17
+    }
 })
 
 export default Home

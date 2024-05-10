@@ -9,24 +9,24 @@ export {
     ItemBlendedIce_Yogurt
 }
 const heightItem = 240
+
 const ItemCoffee_Other = (props) => {
-    props = fetchData()
-    const{name,imgUrl} = props
-    
+    const {name, imgUrl, price} = props
     return <TouchableOpacity style={stylesOtherItem.itemContainer}>
         <View style={stylesOtherItem.imageContainer}>
         <Image source={imgUrl} style={[styles.favoriteIcon, {marginLeft: 5}]}/>
+            <Image src={imgUrl} style={stylesOtherItem.image}/>
         </View>
         <Text>{name}</Text>
         <View style={stylesOtherItem.itemDetailContainer}>
-            <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>Coffee đá</Text>
+            <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>{name}</Text>
             <View style={stylesOtherItem.favoriteAndPriceContainer}>
                 <View>
                     <View style={stylesOtherItem.favoriteContainer}>
                         <Text style={styles.favoriteText}>200k</Text>
                         <Image source={icons.heart} style={[styles.favoriteIcon, {marginLeft: 5}]}/>
                     </View>
-                    <Text style={styles.itemPrice}>20,000 VNĐ</Text>
+                    <Text style={styles.itemPrice}>{price}</Text>
                 </View>
                 <TouchableOpacity>
                 <Image source={icons.addToCart} tintColor={colors.black} style={[styles.addIcon]}/>
