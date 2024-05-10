@@ -1,87 +1,136 @@
-import { StyleSheet, Image, Text, TouchableOpacity, View } from "react-native"
-import { colors, icons, images } from "../constants"
-import { Header } from "../components";
+import { StyleSheet, Image, Text, TouchableOpacity, View, ImageBackground } from "react-native";
+import { colors, icons, images } from "../constants";
+import { useState } from "react";
+import { ExpandableText } from "../components";
 
 const Detail = () => {
-    return <View style={styles.container}>
-        <Header/>
-        <View style={styles.imageContainer}>
-            <View style={{width: '80%', height: '95%', backgroundColor: colors.item, position: 'absolute', borderRadius: 800}}/>
-            <Image source={images.item7} style={styles.image}/>
-        </View>
 
-        <View style={styles.detailsContainer}>
-            <View style={{margin: 25}}>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>Coffee Latte</Text>
-                    <TouchableOpacity>
-                        <Image source={icons.heart} style={styles.icon26}/>
-                    </TouchableOpacity>
+    const [size, setSize] = useState('M')
+    const [quantity, setQuantity] = useState(1)
+    const [favourite, setFavourite] = useState(false)
+
+    const pressSize = (size) => {
+        setSize(size)
+    }
+
+    const pressQuantity = (action) => {
+        if (action === 'add')
+            setQuantity(quantity + 1)
+        else if (action === 'minus' && quantity > 0)
+            setQuantity(quantity - 1)
+    }
+
+    const pressFavourite = () => {
+        setFavourite(!favourite)
+    }
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.imageContainer}>
+                <View style={styles.innerImageContainer}>
+                    <View style={styles.overlayCircle}/>
+                    <Image source={images.item6} style={styles.image} resizeMode="cover"/>
                 </View>
-                <View style={styles.ratingContainer}>
-                    <View style={styles.ratingStars}>
-                        {[...Array(5)].map((_, i) => (
-                            <Image key={i} source={icons.star} style={styles.starIcon}/>
-                        ))}
-                        <Text style={styles.ratingText}>4.5</Text>
+                <TouchableOpacity style={styles.backButton}>
+                    <Image source={icons.back} style={styles.backIcon} resizeMode="stretch"/>
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.detailsContainer}>
+                <View style={styles.detailContent}>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.title}>Coffee Latte</Text>
+                        <TouchableOpacity onPress={() => pressFavourite()}>
+                            <Image source={favourite ? icons.heart : icons.love} tintColor={colors.primary} style={styles.icon26}/>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.priceContainer}>
+                        <Text style={styles.priceText}>100.000<Text> VNĐ</Text></Text>
+                    </View>
+                    
+                    <Text style={styles.sectionTitle}>Mô tả</Text>
+                    <ExpandableText 
+                        text="Trà xanh đá xay là thức uống được kết hợp giữa kem tươi béo ngậy, sữa ngọt ngào và lá trà xanh Nhật Bản. Matcha đá xay có vị chát nhẹ và hương thơm quyến rũ đặc trưng của lá trà xanh. Matcha có tác dụng tốt với thể chất và tinh thần, kích thích làm tỉnh táo và giảm căng thẳng."
+                        maxLength={100}
+                    />
+                    
+                    <View style={styles.selectionRow}>
+                        <Text style={styles.selectionTitle}>Size</Text>
+                        <Text style={styles.selectionTitle}>Số lượng</Text>
+                    </View>
+                    <View style={styles.selectionContainer}>
+                        <View style={styles.sizeContainer}>
+                            <TouchableOpacity onPress={() => {pressSize('M')}}>
+                                <Image source={icons.sizeM} tintColor={size=='M' ? colors.third : 'rgb(120, 120, 120)'} style={styles.sizeIcon}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => {pressSize('L')}}>
+                                <Image source={icons.sizeL} tintColor={size=='L' ? colors.third : 'rgb(120, 120, 120)'} style={styles.sizeIcon}/>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.quantityContainer}>
+                            <TouchableOpacity onPress={() => pressQuantity('minus')} disabled={quantity > 0 ? false : true}>
+                                <Image source={icons.minus} tintColor={colors.item} style={[styles.quantityButton, { backgroundColor: quantity > 0 ? colors.third : 'rgb(120, 120, 120)' }]}/>
+                            </TouchableOpacity>
+                            <Text style={styles.quantity}>{quantity}</Text>
+                            <TouchableOpacity onPress={() => pressQuantity('add')}>
+                                <Image source={icons.plus} tintColor={colors.item} style={styles.quantityButton}/>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.button}>
+                            <Image source={icons.basket} style={styles.buttonIcon} tintColor={colors.secondary} resizeMode="stretch"/>
+                            <Text style={styles.buttonText}>Thêm vào giỏ hàng</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
-                <Text style={styles.description}>Cà phê latte là một thức uống có nguồn gốc từ Ý bao gồm các nguyên liệu chính là cà phê và sữa được đánh lên, đồ uống này được tiêu thụ thường xuyên cả ở nhà và tại các quán cà phê, quán bar.</Text>
-                <View style={styles.quantityContainer}>
-                    <Text style={styles.quantityText}>Số lượng</Text>
-                    <TouchableOpacity>
-                        <Image source={icons.minus} tintColor={'white'} style={styles.quantityButton}/>
-                    </TouchableOpacity>
-                    <Text style={styles.quantity}>1</Text>
-                    <TouchableOpacity>
-                        <Image source={icons.plus} tintColor={'white'} style={styles.quantityButton}/>
-                    </TouchableOpacity>
-                </View>
-                <Text style={styles.totalLabel}>Tổng thanh toán</Text>
-                <Text style={styles.total}>$100</Text>
-            </View>
-
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={[styles.buttonChat, styles.button]}>
-                    <Text style={styles.buttonText}>Nhắn tin</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonAdd, styles.button]}>
-                    <Text style={styles.buttonText}>Thêm vào giỏ hàng</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonBuy, styles.button]}>
-                    <Text style={styles.buttonText}>Mua ngay</Text>
-                </TouchableOpacity>
             </View>
         </View>
-    </View>
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    icon26: {
-        height: 26,
-        width: 26,
-    },
-    icon28: {
-        height: 28,
-        width: 28,
-    },
     imageContainer: {
-        height: '42%',
+        height: '47%',
+    },
+    innerImageContainer: {
+        width: '100%',
+        height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    overlayCircle: {
+        width: '90%',
+        height: '95%',
+        backgroundColor: colors.backgroundDetail,
+        position: 'absolute',
+        borderRadius: 800,
     },
     image: {
         height: '80%',
         width: '60%',
     },
+    backButton: {
+        position: 'absolute',
+        marginTop: 15,
+        marginLeft: 15,
+    },
+    backIcon: {
+        height: 30,
+        width: 26,
+    },
     detailsContainer: {
-        height: '51%',
-        backgroundColor: colors.secondary,
-        justifyContent: 'space-between',
+        height: '55%',
+        backgroundColor: colors.item,
         borderRadius: 20,
+    },
+    detailContent: {
+        margin: 25,
     },
     titleContainer: {
         flexDirection: 'row',
@@ -90,96 +139,107 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 22,
+        fontWeight: '800',
+        color: colors.primary,
+    },
+    icon26: {
+        height: 28,
+        width: 28,
+        marginEnd: 5
+    },
+    priceContainer: {
+        justifyContent: 'center',
+        marginTop: 5,
+        width: '40%',
+    },
+    priceText: {
+        fontSize: 20,
         fontWeight: '600',
+        color: 'rgb(212,136,31)',
     },
-    ratingContainer: {
-        flexDirection: 'row',
-        marginVertical: 10,
-        alignItems: 'center',
-    },
-    ratingStars: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    starIcon: {
-        height: 18,
-        width: 18,
-        marginEnd: 5,
-    },
-    ratingText: {
-        fontSize: 15,
-        color: 'black',
-        marginStart: 5,
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: '700',
+        marginTop: 15,
+        marginBottom: 5,
+        color: colors.primary,
     },
     description: {
-        fontSize: 16,
+        fontSize: 17,
+        fontWeight: '500',
+        color: colors.lightgrey,
+    },
+    selectionRow: {
+        flexDirection: 'row',
+        width: '100%',
+        marginTop: 15,
+    },
+    selectionTitle: {
+        fontSize: 18,
+        fontWeight: '700',
+        width: '50%',
+        color: colors.primary,
+    },
+    selectionContainer: {
+        flexDirection: 'row',
+        width: '100%',
+        alignItems: 'center',
+        marginTop: 8,
+    },
+    sizeContainer: {
+        flexDirection: 'row',
+        width: '50%',
+        alignItems: 'center',
+    },
+    sizeIcon: {
+        width: 36,
+        height: 36,
+        marginRight: 5,
     },
     quantityContainer: {
         flexDirection: 'row',
+        width: '50%',
         alignItems: 'center',
-        marginVertical: 15,
-    },
-    quantityText: {
-        fontSize: 18,
-        fontWeight: '500',
-        marginEnd: 20,
     },
     quantityButton: {
         padding: 5,
         width: 24,
         height: 24,
-        borderRadius: 6,
-        backgroundColor: 'lightblue',
+        borderRadius: 3,
+        backgroundColor: colors.third
     },
     quantity: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: '500',
-        color: 'white',
-        marginHorizontal: 15,
-    },
-    totalContainer: {
-        marginHorizontal: 25,
-        marginBottom: 8,
-    },
-    totalLabel: {
-        fontSize: 16,
-        marginBottom: 8,
-    },
-    total: {
-        fontSize: 18,
-        fontWeight: '500',
-        color: 'red',
+        color: colors.black,
+        marginHorizontal: 12,
     },
     buttonContainer: {
-        backgroundColor: 'lightblue',
         height: 50,
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    button: {
-        height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
+        marginTop: 20,
     },
-    buttonChat: {
-        backgroundColor: 'green',
-        width: '25%',
+    button: {
+        flexDirection: 'row',
+        backgroundColor: colors.backgroundDetail,
+        width: '70%',
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
     },
-    buttonAdd: {
-        backgroundColor: 'green',
-        width: '25%',
-        fontSize: 12
-    },
-    buttonBuy: {
-        backgroundColor: 'orange',
-        width: '50%',
+    buttonIcon: {
+        width: 24,
+        height: 26,
+        marginEnd: 10
     },
     buttonText: {
-        fontSize: 16,
+        fontSize: 17,
         fontWeight: '500',
+        color: colors.secondary,
     },
 });
 
-
-export default Detail
+export default Detail;

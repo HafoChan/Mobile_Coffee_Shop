@@ -1,27 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Image, Text, TouchableOpacity, View, ScrollView, FlatList } from "react-native"
 import { icons, colors } from "../constants"
 import {ItemBlendedIce_Yogurt, ItemCoffee_Other, Header} from "../components"
+import { useRoute } from '@react-navigation/native';
 
 
 const Category = () => {
 
-    const coffeeItems = [
-        { id: '1', icon: icons.hotCoffee, name: 'Cà phê nóng', active: true },
+    const [coffeeItems, setCoffeeItems] = useState([
+        { id: '1', icon: icons.hotCoffee, name: 'Cà phê nóng', active: false },
         { id: '2', icon: icons.iceCoffee, name: 'Cà phê đá', active: false },
-        { id: '3', icon: icons.blendedIce, name: 'Đá xay - Yogurt', active: true },
+        { id: '3', icon: icons.blendedIce, name: 'Đá xay - Yogurt', active: false },
         { id: '4', icon: icons.drink, name: 'Thức uống khác', active: false }
-    ];
+    ]);
     
-    const dessertItems = [
-        { id: '1', icon: icons.dessert, name: 'Bánh ngọt' },
-        { id: '2', icon: icons.iceCream, name: 'Kem' }
-    ];
+    const [dessertItems, setDessertItems] = useState([
+        { id: '1', icon: icons.dessert, name: 'Bánh ngọt', active: false },
+        { id: '2', icon: icons.iceCream, name: 'Kem', active: false }
+    ]);
 
+    const route = useRoute();
     const [selectedTab, setSelectedTab] = useState('drinks');
 
-    const Item = ({ icon, name, active }) => (
-        <TouchableOpacity style={[styles.categoryItem, active && styles.activeCategoryItem]}>
+    useEffect(() => {
+        if (route.params?.selectedCategory && route.params?.id) {
+            if (route.params.selectedCategory === 'drinks') {
+                const updatedCoffeeItems = coffeeItems.map(item => ({
+                    ...item,
+                    active: item.id === route.params.id
+                }));
+                setCoffeeItems(updatedCoffeeItems);
+            } else if (route.params.selectedCategory === 'desserts') {
+                const updatedDessertItems = dessertItems.map(item => ({
+                    ...item,
+                    active: item.id === route.params.id
+                }));
+                setDessertItems(updatedDessertItems);
+            }
+            setSelectedTab(route.params.selectedCategory);
+        }
+    }, [route.params?.selectedCategory, route.params?.id]);
+
+    const pressCategory = (category, id) => {
+        let updatedCoffeeItems;
+        let updatedDessertItems;
+        if (category === 'drinks') {
+            updatedCoffeeItems = coffeeItems.map(item => ({
+                ...item,
+                active: item.id === id
+            }));
+            updatedDessertItems = dessertItems.map(item => ({
+                ...item,
+                active: false
+            }));
+            
+        } else if (category === 'desserts') {
+            updatedDessertItems = dessertItems.map(item => ({
+                ...item,
+                active: item.id === id
+            }));
+            updatedCoffeeItems = coffeeItems.map(item => ({
+                ...item,
+                active: false
+            }));
+            
+        }
+        setCoffeeItems(updatedCoffeeItems);
+        setDessertItems(updatedDessertItems);
+    }
+
+    const Item = ({ category, id, icon, name, active }) => (
+        <TouchableOpacity style={[styles.categoryItem, active && styles.activeCategoryItem]}
+        onPress={() => pressCategory(category, id)}>
             <Image source={icon} tintColor={active && colors.item} style={styles.categoryIcon} />
             <Text style={[styles.categoryTitle, active && styles.activeCategoryTitle]}>{name}</Text>
         </TouchableOpacity>
@@ -40,30 +90,28 @@ const Category = () => {
         <View style={styles.tab}>
             <View style={styles.tabButton}>
                 <TouchableOpacity
-                    style={selectedTab === 'desserts' ? styles.activeTabButton : styles.unActiveTabButton}
-                    onPress={() => changeTab('desserts')}
-                >
-                    <Text style={selectedTab === 'desserts' ? [styles.tabText, styles.activeTabText] : styles.tabText}>Tráng miệng</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
                     style={selectedTab === 'drinks' ? styles.activeTabButton : styles.unActiveTabButton}
                     onPress={() => changeTab('drinks')}
                 >
                     <Text style={selectedTab === 'drinks' ? [styles.tabText, styles.activeTabText] : styles.tabText}>Thức uống</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                    style={selectedTab === 'desserts' ? styles.activeTabButton : styles.unActiveTabButton}
+                    onPress={() => changeTab('desserts')}
+                >
+                    <Text style={selectedTab === 'desserts' ? [styles.tabText, styles.activeTabText] : styles.tabText}>Tráng miệng</Text>
+                </TouchableOpacity>
             </View>
         </View>
 
         <View style={styles.category}>
-            <View style={styles.categoryContainer}>
-                <FlatList
-                    data={selectedTab=='drinks' ? coffeeItems : dessertItems}
-                    renderItem={({ item }) => <Item icon={item.icon} name={item.name} active={item.active}/>}
-                    keyExtractor={item => item.id}
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                />
-            </View>
+            <FlatList
+                data={selectedTab=='drinks' ? coffeeItems : dessertItems}
+                renderItem={({ item }) => <Item category={selectedTab} id={item.id} icon={item.icon} name={item.name} active={item.active}/>}
+                keyExtractor={item => item.id}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+            />
         </View>
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -134,16 +182,10 @@ const styles = StyleSheet.create({
     },
     category: {
         height: '10%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    categoryContainer: {
         flexDirection: 'row',
-        height: '100%',
-        width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 25
+        paddingHorizontal: 25,
     },
     categoryItem: {
         height: 50,

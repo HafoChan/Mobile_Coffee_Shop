@@ -5,4 +5,6 @@ export default {
     black: '#000000',
     white: '#ffffff',
     item: '#ccc6aa',
+    backgroundDetail: '#007042',
+    third: '#975a26'
 }
