@@ -1,19 +1,23 @@
 import { StyleSheet, Image, Text, TouchableOpacity, View} from "react-native"
 import { images, icons, colors } from "../constants"
-import { fetchData } from "../getData"
+import { collection, query, where, getDocs } from "firebase/firestore";
+import db from '../firebaseSetting';
+import { useState } from "react";
+import { fetchData } from "../getData";
 export {
     ItemCoffee_Other,
     ItemBlendedIce_Yogurt
 }
-
 const heightItem = 240
-const Drink = fetchData();
-console.log(Drink)
 const ItemCoffee_Other = (props) => {
+    props = fetchData()
+    const{name,imgUrl} = props
+    
     return <TouchableOpacity style={stylesOtherItem.itemContainer}>
         <View style={stylesOtherItem.imageContainer}>
-            <Image source={Drink.imgUrl} style={stylesOtherItem.image}/>
+        <Image source={imgUrl} style={[styles.favoriteIcon, {marginLeft: 5}]}/>
         </View>
+        <Text>{name}</Text>
         <View style={stylesOtherItem.itemDetailContainer}>
             <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>Coffee đá</Text>
             <View style={stylesOtherItem.favoriteAndPriceContainer}>

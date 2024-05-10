@@ -70,11 +70,6 @@ const Category = () => {
             <View style={styles.itemContainer}>
                 <ItemBlendedIce_Yogurt/>
                 <ItemCoffee_Other/>
-                <ItemCoffee_Other/>
-                <ItemCoffee_Other/>
-                <ItemCoffee_Other/>
-                <ItemCoffee_Other/>
-                <ItemCoffee_Other/>
             </View>
         </ScrollView>
     </View>

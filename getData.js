@@ -24,8 +24,6 @@ async function fetchData() {
         const docSnap = await getDocs(q);
         docSnap.forEach(docdata => {
             const doc = docdata.data();
-            console.log(doc)
-            console.log(new Drink(doc.description, doc.id, doc.imgUrl, doc.name, doc.size))
             return doc
         });
     } catch (error) {
