@@ -47,19 +47,32 @@ const Category = () => {
 
     useEffect(() => {
         if (route.params?.selectedCategory && route.params?.id) {
+            let updatedCoffeeItems
+            let updatedDessertItems
             if (route.params.selectedCategory === 'drinks') {
-                const updatedCoffeeItems = coffeeItems.map(item => ({
+                updatedCoffeeItems = coffeeItems.map(item => ({
                     ...item,
                     active: item.id === route.params.id
                 }));
-                setCoffeeItems(updatedCoffeeItems);
+
+                updatedDessertItems = dessertItems.map(item => ({
+                    ...item,
+                    active: false
+                }));
+                
             } else if (route.params.selectedCategory === 'desserts') {
-                const updatedDessertItems = dessertItems.map(item => ({
+                updatedDessertItems = dessertItems.map(item => ({
                     ...item,
                     active: item.id === route.params.id
                 }));
-                setDessertItems(updatedDessertItems);
+                
+                updatedCoffeeItems = coffeeItems.map(item => ({
+                    ...item,
+                    active: false
+                }));
             }
+            setDessertItems(updatedDessertItems);
+            setCoffeeItems(updatedCoffeeItems);
             setSelectedTab(route.params.selectedCategory);
         }
     }, [route.params?.selectedCategory, route.params?.id]);
