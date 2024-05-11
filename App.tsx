@@ -19,7 +19,7 @@ const App = () => {
         component={Login}
         options={{ title: 'Login' }}
       />
-        <Stack.Screen name='TabNavigator' component={TabNavigator} options={{animation: 'slide_from_bottom'}}/>
+        <Stack.Screen name='TabNavigator' component={TabNavigator}  options={{animation: 'slide_from_bottom'}}/>
         <Stack.Screen name='Detail' component={Detail} options={{animation: 'slide_from_bottom'}}/>
         
       <Stack.Screen name="Register" component={Register} />

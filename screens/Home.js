@@ -1,9 +1,9 @@
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { colors, icons, images } from "../constants"
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation,NavigationContainer } from "@react-navigation/native";
+import { useState } from "react";
 
-const Home = () => {
-
+const Home = ({route}) => {
     const coffeeItems = [
         { id: '1', icon: icons.hotCoffee, name: 'Cà phê nóng'},
         { id: '2', icon: icons.iceCoffee, name: 'Cà phê đá'},
@@ -33,7 +33,7 @@ const Home = () => {
     return <View style={styles.containerAll}>
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.headerText}>Xin chào, <Text style={styles.boldText}>SoHan</Text></Text>
+                <Text style={styles.headerText}>Xin chào, <Text style={styles.boldText}>{route.params.name}</Text></Text>
                 <Image source={icons.user} style={styles.icon}/>
             </View>
             <View style={styles.bannerContainer}>

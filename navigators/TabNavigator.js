@@ -13,7 +13,8 @@ const Tab = createBottomTabNavigator()
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const TabNavigator = () => {
+const TabNavigator = ({route}) => {
+    console.log(route.params.name)
     return (
         <Tab.Navigator 
             screenOptions={{
@@ -22,7 +23,7 @@ const TabNavigator = () => {
                 tabBarShowLabel: false,
                 tabBarStyle: styles.footer
             }}>
-            <Tab.Screen name='Home' component={Home}  options={{
+            <Tab.Screen name='Home' component={Home} initialParams={{name:route.params.name}}  options={{
                 tabBarIcon: ({focused, color, size}) => {     
                     return <Image source={icons.home} style={styles.icon26} tintColor={focused?colors.primary:colors.black}/>
                 }
