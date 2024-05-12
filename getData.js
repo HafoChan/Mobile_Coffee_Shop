@@ -4,19 +4,24 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import db from './firebaseSetting';
 
 // Define the fetchData function outside of the App component
-async function fetchData() {
-    const q = query(collection(db, "coffecold"), where("id", "==", 2));
+async function fetchData(category, id) {
+    if (id == null)
+        q = collection(db, category)
+    else
+        q = query(collection(db, category), where("id", "==", id))
+
     try {
         const docSnap = await getDocs(q);
         const docs = [];
         docSnap.forEach(docdata => {
             docs.push(docdata.data());
         });
-        return docs[0]; // Trả về bản ghi đầu tiên (vì bạn đang tìm kiếm theo ID)
+        if (id != null)
+            return docs[0]
+        return docs
     } catch (error) {
-        console.error("Error fetching document:", error);
+        console.error("Error fetching document:", error)
     }
 }
 
-
-export { fetchData }; // Export the fetchData function
+export { fetchData }

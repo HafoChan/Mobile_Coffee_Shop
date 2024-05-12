@@ -14,10 +14,8 @@ const ItemCoffee_Other = (props) => {
     const {name, imgUrl, price} = props
     return <TouchableOpacity style={stylesOtherItem.itemContainer}>
         <View style={stylesOtherItem.imageContainer}>
-        <Image source={imgUrl} style={[styles.favoriteIcon, {marginLeft: 5}]}/>
             <Image src={imgUrl} style={stylesOtherItem.image}/>
         </View>
-        <Text>{name}</Text>
         <View style={stylesOtherItem.itemDetailContainer}>
             <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>{name}</Text>
             <View style={stylesOtherItem.favoriteAndPriceContainer}>

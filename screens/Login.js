@@ -13,7 +13,7 @@ const App = ({navigation}) => {
     const [password, setPassword] = useState('');
     const [userCredential, setuserCredential] = useState('');
     const loginfire = () => {
-        auth().signInWithEmailAndPassword(email, password)
+        auth().signInWithEmailAndPassword('a1@gmail.com', '123456')
             .then((res) => {
                 console.log(res)
                 navigation.navigate("TabNavigator",{name: email.split("@")[0]})
@@ -28,7 +28,7 @@ const App = ({navigation}) => {
     }
     useEffect(()=>{
         GoogleSignin.configure({
-            webClientId: '767447950358-fjm7ksu2qmi04v7565ghue4g5f0un2m7.apps.googleusercontent.com',
+            webClientId: '767447950358-fjm7ksu2qmi04v7565ghue4g5f0un2m7.apps.googleusercontent.com'
         })
     },[])
     let isSigningIn = false;
