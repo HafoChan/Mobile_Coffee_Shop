@@ -26,4 +26,8 @@ export default {
     iceCream: require('../assets/ice-cream.png'),
     dessert: require('../assets/dessert.png'),
     blendedIce: require('../assets/blended-ice.png'),
+    email :require('../assets/3.png'),
+    pass: require('../assets/2.png'),
+    gg: require('../assets/gg.png'),
+
 }

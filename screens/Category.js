@@ -7,43 +7,39 @@ import { fetchData } from '../getData';
 
 
 const Category = () => {
-
+    const route = useRoute();
+    const [selectedTab, setSelectedTab] = useState('drinks');
     const [data, setData] = useState(null);
+    const [qCategory, setQCategory] = useState('coffehot')
+    const [qId, setQId] = useState(1)
 
-    useEffect(() => {
-        fetchData().then(fetchedData => {
-            setData(fetchedData);
-        }).catch(error => {
-            console.error('Failed to fetch data:', error);
-        });
-    }, []);
-
-    // Trước khi bóc tách, kiểm tra nếu dữ liệu có sẵn
-    if (!data) {
-        return <Text>Loading...</Text>; // Hoặc bất kỳ chỉ báo trạng thái tải nào khác
-    }
-
-    const { description, id, imgUrl, name, size } = data;
-
-    console.log(data)
-    
-    const [mediumSize, largeSize] = size
-    console.log(description)
-    //console.log(size)
     const [coffeeItems, setCoffeeItems] = useState([
-        { id: '1', icon: icons.hotCoffee, name: 'Cà phê nóng', active: false },
-        { id: '2', icon: icons.iceCoffee, name: 'Cà phê đá', active: false },
-        { id: '3', icon: icons.blendedIce, name: 'Đá xay - Yogurt', active: false },
-        { id: '4', icon: icons.drink, name: 'Thức uống khác', active: false }
+        { id: 1, icon: icons.hotCoffee, name: 'Cà phê nóng', active: true },
+        { id: 2, icon: icons.iceCoffee, name: 'Cà phê đá', active: false },
+        { id: 3, icon: icons.blendedIce, name: 'Đá xay - Yogurt', active: false },
+        { id: 4, icon: icons.drink, name: 'Thức uống khác', active: false }
     ]);
     
     const [dessertItems, setDessertItems] = useState([
-        { id: '1', icon: icons.dessert, name: 'Bánh ngọt', active: false },
-        { id: '2', icon: icons.iceCream, name: 'Kem', active: false }
+        { id: 1, icon: icons.dessert, name: 'Bánh ngọt', active: false },
+        { id: 2, icon: icons.iceCream, name: 'Kem', active: false }
     ]);
 
-    const route = useRoute();
-    const [selectedTab, setSelectedTab] = useState('drinks');
+    const chooseCategory = (tab, id) => {
+        if (tab === 'drinks') {
+            if (id ==  1)
+                return 'coffehot'
+            if (id == 2)
+                return 'coffecold'
+            if (id == 3)
+                return 'Yogurt'
+            return 'Other'
+        } else {
+            if (id == 1)
+                return 'Cake'
+            return 'IceCream'
+        }
+    }
 
     useEffect(() => {
         if (route.params?.selectedCategory && route.params?.id) {
@@ -54,18 +50,20 @@ const Category = () => {
                     ...item,
                     active: item.id === route.params.id
                 }));
-
+                setQId(updatedCoffeeItems.find(item => item.active)?.id)
+                setQCategory(chooseCategory('drinks', qId))
+                //console.log(qId)
                 updatedDessertItems = dessertItems.map(item => ({
                     ...item,
                     active: false
                 }));
-                
             } else if (route.params.selectedCategory === 'desserts') {
                 updatedDessertItems = dessertItems.map(item => ({
                     ...item,
                     active: item.id === route.params.id
                 }));
-                
+                setQId(updatedDessertItems.find(item => item.active)?.id)
+                setQCategory(chooseCategory('desserts', qId))
                 updatedCoffeeItems = coffeeItems.map(item => ({
                     ...item,
                     active: false
@@ -77,32 +75,41 @@ const Category = () => {
         }
     }, [route.params?.selectedCategory, route.params?.id]);
 
+    useEffect(() => {
+        const getData = async () => {
+            const categoryData = await fetchData(qCategory, null);
+            setData(categoryData);
+        };
+        getData();
+    }, [qCategory, qId]);
+    
     const pressCategory = (category, id) => {
         let updatedCoffeeItems;
         let updatedDessertItems;
         if (category === 'drinks') {
             updatedCoffeeItems = coffeeItems.map(item => ({
                 ...item,
-                active: item.id === id
-            }));
+                active: item.id == id
+            }))
+            
             updatedDessertItems = dessertItems.map(item => ({
                 ...item,
                 active: false
-            }));
-            
+            }))
         } else if (category === 'desserts') {
             updatedDessertItems = dessertItems.map(item => ({
                 ...item,
-                active: item.id === id
-            }));
+                active: item.id == id
+            }))
+            
             updatedCoffeeItems = coffeeItems.map(item => ({
                 ...item,
                 active: false
-            }));
+            }))
             
         }
-        setCoffeeItems(updatedCoffeeItems);
-        setDessertItems(updatedDessertItems);
+        setCoffeeItems(updatedCoffeeItems)
+        setDessertItems(updatedDessertItems)
     }
 
     const Item = ({ category, id, icon, name, active }) => (
@@ -116,6 +123,9 @@ const Category = () => {
     const changeTab = (tab) => {
         setSelectedTab(tab);
     };
+
+    console.log(qCategory)
+    console.log(data)
 
     return <View style={styles.container}>
 
@@ -152,16 +162,12 @@ const Category = () => {
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
             <View style={styles.itemContainer}>
-            {data && ( // Render content only if data is available
-            <>
-                <ItemCoffee_Other name={name} imgUrl={imgUrl} price={mediumSize.price}/>
-                <ItemCoffee_Other name={name} imgUrl={imgUrl} price={mediumSize.price}/>
-                <ItemCoffee_Other name={name} imgUrl={imgUrl} price={mediumSize.price}/>
-            </>
-            )}
-            {!data && ( // Display loading indicator or message if no data
-                <Text>Đang tải...</Text>
-            )}
+                {/* {!data && (
+                    <Text>Đang tải...</Text>
+                )}
+                {data != null && data.map(item => {
+                    return(<ItemCoffee_Other key={item.id} name={item.name} imgUrl={item.imgUrl} price={100000}/>)
+                })} */}
             </View>
         </ScrollView>
     </View>

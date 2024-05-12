@@ -7,4 +7,5 @@ export default {
     item6: require('../assets/item6.png'),
     item7: require('../assets/item7.png'),
     banner1: require('../assets/banner1.jpg'),
+    background : require('../assets/background.jpg')
 }
