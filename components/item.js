@@ -1,9 +1,6 @@
 import { StyleSheet, Image, Text, TouchableOpacity, View} from "react-native"
 import { images, icons, colors } from "../constants"
-import { collection, query, where, getDocs } from "firebase/firestore";
-import db from '../firebaseSetting';
-import { useState } from "react";
-import { fetchData } from "../getData";
+import { useNavigation } from "@react-navigation/native";
 export {
     ItemCoffee_Other,
     ItemBlendedIce_Yogurt
@@ -11,8 +8,15 @@ export {
 const heightItem = 240
 
 const ItemCoffee_Other = (props) => {
-    const {name, imgUrl, price} = props
-    return <TouchableOpacity style={stylesOtherItem.itemContainer}>
+    const {name, imgUrl, price, category, id} = props
+
+    const navigation = useNavigation()
+
+    const pressItem = (category, id) => {
+        navigation.navigate('Detail', { category: category, id: id })
+    }
+
+    return <TouchableOpacity style={stylesOtherItem.itemContainer} onPress={() => pressItem(category, id)}>
         <View style={stylesOtherItem.imageContainer}>
             <Image src={imgUrl} style={stylesOtherItem.image}/>
         </View>
@@ -24,7 +28,7 @@ const ItemCoffee_Other = (props) => {
                         <Text style={styles.favoriteText}>200k</Text>
                         <Image source={icons.heart} style={[styles.favoriteIcon, {marginLeft: 5}]}/>
                     </View>
-                    <Text style={styles.itemPrice}>{price}</Text>
+                    <Text style={styles.itemPrice}>{price.toLocaleString()}<Text> VNĐ</Text></Text>
                 </View>
                 <TouchableOpacity>
                 <Image source={icons.addToCart} tintColor={colors.black} style={[styles.addIcon]}/>

@@ -11,7 +11,6 @@ const Category = () => {
     const [selectedTab, setSelectedTab] = useState('drinks');
     const [data, setData] = useState(null);
     const [qCategory, setQCategory] = useState('coffehot')
-    const [qId, setQId] = useState(1)
 
     const [coffeeItems, setCoffeeItems] = useState([
         { id: 1, icon: icons.hotCoffee, name: 'Cà phê nóng', active: true },
@@ -26,7 +25,7 @@ const Category = () => {
     ]);
 
     const chooseCategory = (tab, id) => {
-        if (tab === 'drinks') {
+        if (tab == 'drinks') {
             if (id ==  1)
                 return 'coffehot'
             if (id == 2)
@@ -43,34 +42,40 @@ const Category = () => {
 
     useEffect(() => {
         if (route.params?.selectedCategory && route.params?.id) {
-            let updatedCoffeeItems
-            let updatedDessertItems
-            if (route.params.selectedCategory === 'drinks') {
-                updatedCoffeeItems = coffeeItems.map(item => ({
-                    ...item,
-                    active: item.id === route.params.id
-                }));
-                setQId(updatedCoffeeItems.find(item => item.active)?.id)
-                setQCategory(chooseCategory('drinks', qId))
-                //console.log(qId)
-                updatedDessertItems = dessertItems.map(item => ({
-                    ...item,
-                    active: false
-                }));
-            } else if (route.params.selectedCategory === 'desserts') {
-                updatedDessertItems = dessertItems.map(item => ({
-                    ...item,
-                    active: item.id === route.params.id
-                }));
-                setQId(updatedDessertItems.find(item => item.active)?.id)
-                setQCategory(chooseCategory('desserts', qId))
-                updatedCoffeeItems = coffeeItems.map(item => ({
-                    ...item,
-                    active: false
-                }));
+            const updateCategory = async () => {
+                let updatedCoffeeItems
+                let updatedDessertItems
+                if (route.params.selectedCategory == 'drinks') {
+                    updatedCoffeeItems = coffeeItems.map(item => ({
+                        ...item,
+                        active: item.id == route.params.id
+                    }));
+
+                    const newQCategory = chooseCategory('drinks', route.params.id)
+                    setQCategory(newQCategory);
+
+                    updatedDessertItems = dessertItems.map(item => ({
+                        ...item,
+                        active: false
+                    }));
+                } else if (route.params.selectedCategory == 'desserts') {
+                    updatedDessertItems = dessertItems.map(item => ({
+                        ...item,
+                        active: item.id == route.params.id
+                    }));
+
+                    const newQCategory = chooseCategory('desserts', route.params.id)
+                    setQCategory(newQCategory);
+
+                    updatedCoffeeItems = coffeeItems.map(item => ({
+                        ...item,
+                        active: false
+                    }));
+                }
+                setDessertItems(updatedDessertItems);
+                setCoffeeItems(updatedCoffeeItems);
             }
-            setDessertItems(updatedDessertItems);
-            setCoffeeItems(updatedCoffeeItems);
+            updateCategory();
             setSelectedTab(route.params.selectedCategory);
         }
     }, [route.params?.selectedCategory, route.params?.id]);
@@ -81,27 +86,33 @@ const Category = () => {
             setData(categoryData);
         };
         getData();
-    }, [qCategory, qId]);
+    }, [qCategory]);
     
     const pressCategory = (category, id) => {
         let updatedCoffeeItems;
         let updatedDessertItems;
-        if (category === 'drinks') {
+        if (category == 'drinks') {
             updatedCoffeeItems = coffeeItems.map(item => ({
                 ...item,
                 active: item.id == id
             }))
-            
+
+            const newQCategory = chooseCategory('drinks', id)
+            setQCategory(newQCategory);
+
             updatedDessertItems = dessertItems.map(item => ({
                 ...item,
                 active: false
             }))
-        } else if (category === 'desserts') {
+        } else if (category == 'desserts') {
             updatedDessertItems = dessertItems.map(item => ({
                 ...item,
                 active: item.id == id
             }))
-            
+
+            const newQCategory = chooseCategory('desserts', id)
+            setQCategory(newQCategory);
+
             updatedCoffeeItems = coffeeItems.map(item => ({
                 ...item,
                 active: false
@@ -124,8 +135,12 @@ const Category = () => {
         setSelectedTab(tab);
     };
 
-    console.log(qCategory)
-    console.log(data)
+    const showPrice = (item) => {
+        const {size} = item
+        if (size != undefined)
+            return item.size[0].price
+        return item.price
+    }
 
     return <View style={styles.container}>
 
@@ -162,18 +177,16 @@ const Category = () => {
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
             <View style={styles.itemContainer}>
-                {/* {!data && (
+                {!data && (
                     <Text>Đang tải...</Text>
                 )}
                 {data != null && data.map(item => {
-                    return(<ItemCoffee_Other key={item.id} name={item.name} imgUrl={item.imgUrl} price={100000}/>)
-                })} */}
+                    return(<ItemCoffee_Other key={item.id} name={item.name} imgUrl={item.imgUrl} price={showPrice(item)} category={qCategory} id={item.id}/>)
+                })}
             </View>
         </ScrollView>
     </View>
 }
-
-
 
 const styles = StyleSheet.create({
     container: {

@@ -1,5 +1,5 @@
 import React, { useState ,useEffect} from 'react';
-import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity,Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { colors, icons, images } from "../constants"
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
@@ -15,7 +15,6 @@ const App = ({navigation}) => {
     const loginfire = () => {
         auth().signInWithEmailAndPassword('a1@gmail.com', '123456')
             .then((res) => {
-                console.log(res)
                 navigation.navigate("TabNavigator",{name: email.split("@")[0]})
             })
             .catch((error) => {
