@@ -9,11 +9,11 @@ const App = ({navigation}) => {
     const [selectedTab,setSelectedTab] = useState('signin');
     const changeTab = (tab) => {
         setSelectedTab(tab);}
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [userCredential, setuserCredential] = useState('');
+    const [email, setEmail] = useState("a1@gmail.com");
+    const [password, setPassword] = useState("123456");
+    const [userCredential, setuserCredential] = useState();
     const loginfire = () => {
-        auth().signInWithEmailAndPassword('a1@gmail.com', '123456')
+        auth().signInWithEmailAndPassword(email, password)
             .then((res) => {
                 navigation.navigate("TabNavigator",{name: email.split("@")[0]})
             })

@@ -3,7 +3,8 @@ import { StyleSheet, Image, Text, TouchableOpacity, View, ScrollView, FlatList }
 import { icons, colors } from "../constants"
 import {ItemBlendedIce_Yogurt, ItemCoffee_Other} from "../components"
 import { useRoute } from '@react-navigation/native';
-import { fetchData } from '../getData';
+import { fetchData,getDataToCart } from '../getData';
+import { doc } from 'firebase/firestore';
 
 
 const Category = () => {
@@ -87,7 +88,7 @@ const Category = () => {
         };
         getData();
     }, [qCategory]);
-    
+
     const pressCategory = (category, id) => {
         let updatedCoffeeItems;
         let updatedDessertItems;
@@ -104,6 +105,7 @@ const Category = () => {
                 ...item,
                 active: false
             }))
+        
         } else if (category == 'desserts') {
             updatedDessertItems = dessertItems.map(item => ({
                 ...item,
@@ -117,11 +119,12 @@ const Category = () => {
                 ...item,
                 active: false
             }))
-            
+            }
+            setCoffeeItems(updatedCoffeeItems)
+            setDessertItems(updatedDessertItems)
         }
-        setCoffeeItems(updatedCoffeeItems)
-        setDessertItems(updatedDessertItems)
-    }
+
+
 
     const Item = ({ category, id, icon, name, active }) => (
         <TouchableOpacity style={[styles.categoryItem, active && styles.activeCategoryItem]}
@@ -181,13 +184,12 @@ const Category = () => {
                     <Text>Đang tải...</Text>
                 )}
                 {data != null && data.map(item => {
-                    return(<ItemCoffee_Other key={item.id} name={item.name} imgUrl={item.imgUrl} price={showPrice(item)} category={qCategory} id={item.id}/>)
+                    return(<ItemCoffee_Other key={item.id} name={item.name} nameUser={route.params.name} imgUrl={item.imgUrl} price={showPrice(item)} category={qCategory} id={item.id}/>)
                 })}
             </View>
         </ScrollView>
     </View>
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,

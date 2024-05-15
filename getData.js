@@ -1,9 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs} from "firebase/firestore";
 import db from './firebaseSetting';
 
-// Define the fetchData function outside of the App component
+async function loadDataToCart() {
+    const q = query(collection(db, "Users"),where("name","==","a1"));
+    try {
+        const docSnap = await getDocs(q);
+        console.log("vo dc ")
+        const docs = [];
+        docSnap.forEach(docdata => {
+            console.log(docdata.id, " => ", docdata.data());
+            console.log(docdata.id)
+            console.log('in')
+            docdata.data().cart.forEach(item=>{
+                console.log(item)
+                docs.push(item)
+            })
+        });
+        console.log(docs)
+        return docs; // Trả về bản ghi đầu tiên (vì bạn đang tìm kiếm theo ID)
+    } catch (error) {
+        console.error("Error fetching document:", error);
+    }
+}
 async function fetchData(category, id) {
     if (id == null)
         q = collection(db, category)
@@ -24,4 +42,4 @@ async function fetchData(category, id) {
     }
 }
 
-export { fetchData }
+export { loadDataToCart, fetchData}; // Export the fetchData function
