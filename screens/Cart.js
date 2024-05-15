@@ -3,31 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { icons, images } from "../constants"
 import { CartItem } from "../components"
 import { loadDataToCart } from "../getData";
-import { setIsLoaded,getIsLoaded } from "../loadState";
-import { get } from "firebase/database";
 const screenWidth = Dimensions.get('window').width
-const Item = () => {
-    return <View style={{ height: 100, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', margin: 10, borderRadius: 10 }}>
-        <View style={{ width: '100%', height: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Image source={images.item3} style={{ marginHorizontal: 15, height: '90%', width: '30%' }} />
-            <View style={{ width: '50%', marginEnd: 30 }}>
-                <Text style={{ fontSize: 20, fontWeight: '500', color: 'black', marginBottom: 15 }}>Coffee Latte</Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 17, fontWeight: '500', color: 'red', marginRight: 30 }}>$10</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <TouchableOpacity>
-                            <Image source={icons.minus} tintColor={'black'} style={{ width: 22, height: 22, borderRadius: 3, backgroundColor: 'lightblue' }} />
-                        </TouchableOpacity>
-                        <Text style={{ fontSize: 17, fontWeight: '500', color: 'black', marginHorizontal: 10 }}>1</Text>
-                        <TouchableOpacity>
-                            <Image source={icons.plus} tintColor={'black'} style={{ width: 22, height: 22, borderRadius: 3, backgroundColor: 'lightblue' }} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-        </View>
-    </View>
-}
+
 // let checkLoad = getIsLoaded();
 let a = 1
 const Cartt = ({route}) => {

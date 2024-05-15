@@ -1,9 +1,11 @@
 import { StyleSheet, Image, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import { colors, icons } from "../constants";
+import db from '../firebaseSetting';
 import { useState, useEffect } from "react";
 import { ExpandableText } from "../components";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { fetchData } from '../getData';
+import { pushCart } from "../pushCart";
 
 const Detail = () => {
 
@@ -15,48 +17,48 @@ const Detail = () => {
     const [loading, setLoading] = useState(true)
     const navigate = useNavigation()
 
-    const pressSize = (sizeChoose) => {
-        setSizeChoose(sizeChoose)
-    }
+    useEffect(() => {
+        const getData = async () => {
+            const categoryData = await fetchData(route.params?.category, route.params?.id);
+            setData(categoryData);
+            setLoading(false);
+        };
+        getData();
+    }, [route.params?.category, route.params?.id]);
+
+    const pressSize = (size) => {
+        setSizeChoose(size);
+    };
 
     const pressQuantity = (action) => {
         if (action === 'add')
-            setQuantity(quantity + 1)
+            setQuantity(quantity + 1);
         else if (action === 'minus' && quantity > 0)
-            setQuantity(quantity - 1)
-    }
+            setQuantity(quantity - 1);
+    };
 
     const pressFavourite = () => {
-        setFavourite(!favourite)
-    }
+        setFavourite(!favourite);
+    };
 
-    useEffect(() => {
-        const getData = async () => {
-            const categoryData = await fetchData(route.params?.category, route.params?.id)
-            setData(categoryData)
-            setLoading(false)
-        };
-        getData();
-    }, [route.params?.category, route.params?.id])
+    const back = () => {
+        navigate.goBack();
+    };
 
     if (loading) {
-        return <Text>Đang tải...</Text>
+        return <Text>Đang tải...</Text>;
     }
 
-    const {description, imgUrl, name, size} = data
+    const { description, imgUrl, name, size } = data;
 
     let sizeMediumPrice = null;
     let sizeLargePrice = null;
-    let checkSize = false
+    let checkSize = false;
 
-    if (size != undefined) {
-        sizeMediumPrice = size[0].price
-        sizeLargePrice = size[1].price
-        checkSize = true
-    }
-
-    const back = () => {
-        navigate.goBack()
+    if (size !== undefined) {
+        sizeMediumPrice = size[0].price;
+        sizeLargePrice = size[1].price;
+        checkSize = true;
     }
 
     return <View style={styles.container}>
@@ -105,8 +107,8 @@ const Detail = () => {
                                 </TouchableOpacity>
                             </View>)}
                             <View style={styles.quantityContainer}>
-                                <TouchableOpacity onPress={() => pressQuantity('minus')} disabled={quantity > 0 ? false : true}>
-                                    <Image source={icons.minus} tintColor={colors.item} style={[styles.quantityButton, { backgroundColor: quantity > 0 ? colors.third : 'rgb(120, 120, 120)' }]}/>
+                                <TouchableOpacity onPress={() => pressQuantity('minus')} disabled={quantity > 1 ? false : true}>
+                                    <Image source={icons.minus} tintColor={colors.item} style={[styles.quantityButton, { backgroundColor: quantity > 1 ? colors.third : 'rgb(120, 120, 120)' }]}/>
                                 </TouchableOpacity>
                                 <Text style={styles.quantity}>{quantity}</Text>
                                 <TouchableOpacity onPress={() => pressQuantity('add')}>
@@ -116,7 +118,7 @@ const Detail = () => {
                         </View>
 
                         <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.button}>
+                            <TouchableOpacity style={styles.button} onPress={() => pushCart(db, route.params.nameUser, route.params.item, quantity, sizeChoose)}>
                                 <Image source={icons.basket} style={styles.buttonIcon} tintColor={colors.secondary} resizeMode="stretch"/>
                                 <Text style={styles.buttonText}>Thêm vào giỏ hàng</Text>
                             </TouchableOpacity>
