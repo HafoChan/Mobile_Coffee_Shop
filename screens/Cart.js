@@ -109,6 +109,7 @@ const Cartt = ({route}) => {
                             imgUrl={item.imgUrl}
                             price={showPrice(item).price}
                             quantity = {showPrice(item).quantity}
+                            id = {item.id}
 
                         />
                     ))}

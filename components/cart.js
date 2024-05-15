@@ -1,11 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
 import { colors,images ,icons} from '../constants';
+// import { loadQuantity } from '../getData';
+// import { collection,query,where,setDoc } from 'firebase/firestore';
 const screenWidth = Dimensions.get('window').width
 console.log(screenWidth)
 
 const CartItem =(props)=>{
-    const {name,size,imgUrl,price,quantity} = props
+    const [quantityvalue,setQuantity] = useState(1);
+    const {id,name,size,imgUrl,price,quantity} = props
+    useEffect(()=>{
+        // console.log("---------------------------------------------")
+        // const drink = query(collection(db,"Userss"),where("id","==",id))
+        // console.log(drink)
+        // setDoc(drink,quantityvalue)
+        // console.log(drinkData)
+        setQuantity(quantity)
+    },[quantity])
+    const PressButton=(name)=>{
+        if (name==="add")
+        {
+            setQuantity(quantityvalue+1)
+        }
+        else if (name==="minus" && quantityvalue>0)
+        {
+            setQuantity(quantityvalue-1)
+        }
+
+    }
     // if (name1=='banh')
     //     {
     //     const {price} = props
@@ -30,11 +52,11 @@ const CartItem =(props)=>{
                     <View style={{flexDirection:'row',marginTop:10,justifyContent:'space-between',width:screenWidth-180}}>
                         <Text style={{fontSize:20,fontWeight:'bold',color:'orange'}}>${price}</Text>
                         <View style={styles.button}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={()=>PressButton("minus")} disabled={quantity>0?false:true}>
                                 <Image source={icons.minus} tintColor={'black'} style={{width: 22, height: 22, borderRadius: 40, backgroundColor: 'white'}}/>
                             </TouchableOpacity>
-                            <Text style={{fontSize: 17, fontWeight: '500', color: 'black', marginHorizontal: 10}}>{quantity}</Text>
-                            <TouchableOpacity>
+                            <Text style={{fontSize: 17, fontWeight: '500', color: 'black', marginHorizontal: 10}}>{quantityvalue}</Text>
+                            <TouchableOpacity onPress={()=>PressButton("add")}>
                                 <Image source={icons.plus} tintColor={'black'} style={{width: 22, height: 22, borderRadius: 40, backgroundColor: 'white'}}/>
                             </TouchableOpacity>
                         </View>
