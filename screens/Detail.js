@@ -81,8 +81,8 @@ const Detail = () => {
                         </View>
 
                         <View style={styles.priceContainer}>
-                            {checkSize && <Text style={styles.priceText}>{sizeChoose == "M" ? sizeMediumPrice : sizeLargePrice}<Text> VNĐ</Text></Text>}
-                            {!checkSize && <Text style={styles.priceText}>{data.price}<Text> VNĐ</Text></Text>}
+                            {checkSize && <Text style={styles.priceText}>{sizeChoose == "M" ? sizeMediumPrice.toLocaleString() : sizeLargePrice.toLocaleString()}<Text> VNĐ</Text></Text>}
+                            {!checkSize && <Text style={styles.priceText}>{data.price.toLocaleString()}<Text> VNĐ</Text></Text>}
                         </View>
                         
                         <Text style={styles.sectionTitle}>Mô tả</Text>
