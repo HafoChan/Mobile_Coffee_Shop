@@ -144,6 +144,7 @@ const ItemCoffee_Other = (props) => {
                         <Image source={icons.heart} style={[styles.favoriteIcon, { marginLeft: 5 }]} />
                     </View>
                     <Text style={styles.itemPrice}>{price.toLocaleString()}<Text> VNĐ</Text></Text>
+                    <Text style={styles.itemPrice}>{price.toLocaleString()}<Text> VNĐ</Text></Text>
                 </View>
                 <TouchableOpacity onPress={(addCart)}>
                     <Image source={icons.addToCart} tintColor={colors.black} style={[styles.addIcon]} />

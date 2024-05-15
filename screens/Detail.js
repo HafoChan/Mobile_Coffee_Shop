@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ExpandableText } from "../components";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { fetchData } from '../getData';
+
 const Detail = () => {
 
     const route = useRoute()
@@ -13,6 +14,7 @@ const Detail = () => {
     const [favourite, setFavourite] = useState(false)
     const [loading, setLoading] = useState(true)
     const navigate = useNavigation()
+
     const pressSize = (sizeChoose) => {
         setSizeChoose(sizeChoose)
     }

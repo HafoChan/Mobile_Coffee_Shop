@@ -93,6 +93,7 @@ const Category = () => {
         let updatedCoffeeItems;
         let updatedDessertItems;
         if (category == 'drinks') {
+        if (category == 'drinks') {
             updatedCoffeeItems = coffeeItems.map(item => ({
                 ...item,
                 active: item.id == id
@@ -105,6 +106,7 @@ const Category = () => {
                 ...item,
                 active: false
             }))
+        } 
         } else if (category == 'desserts') {
             updatedDessertItems = dessertItems.map(item => ({
                 ...item,
@@ -118,18 +120,12 @@ const Category = () => {
                 ...item,
                 active: false
             }))
+            }
             
         }
         setCoffeeItems(updatedCoffeeItems)
         setDessertItems(updatedDessertItems)
-    }
-
-    const showPrice = (item) => {
-        const {size} = item
-        if (size != undefined)
-            return item.size[0].price
-        return item.price
-    }
+    
 
     const Item = ({ category, id, icon, name, active }) => (
         <TouchableOpacity style={[styles.categoryItem, active && styles.activeCategoryItem]}
@@ -142,6 +138,13 @@ const Category = () => {
     const changeTab = (tab) => {
         setSelectedTab(tab);
     };
+
+    const showPrice = (item) => {
+        const {size} = item
+        if (size != undefined)
+            return item.size[0].price
+        return item.price
+    }
 
     return <View style={styles.container}>
 
@@ -188,10 +191,6 @@ const Category = () => {
         </ScrollView>
     </View>
 }
-
-
-
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,

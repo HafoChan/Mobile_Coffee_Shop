@@ -5,15 +5,15 @@ import { useState } from "react";
 
 const Home = ({route}) => {
     const coffeeItems = [
-        { id: '1', icon: icons.hotCoffee, name: 'Cà phê nóng'},
-        { id: '2', icon: icons.iceCoffee, name: 'Cà phê đá'},
-        { id: '3', icon: icons.blendedIce, name: 'Đá xay - Yogurt'},
-        { id: '4', icon: icons.drink, name: 'Thức uống khác'}
+        { id: 1, icon: icons.hotCoffee, name: 'Cà phê nóng'},
+        { id: 2, icon: icons.iceCoffee, name: 'Cà phê đá'},
+        { id: 3, icon: icons.blendedIce, name: 'Đá xay - Yogurt'},
+        { id: 4, icon: icons.drink, name: 'Thức uống khác'}
     ];
     
     const dessertItems = [
-        { id: '1', icon: icons.dessert, name: 'Bánh ngọt' },
-        { id: '2', icon: icons.iceCream, name: 'Kem' }
+        { id: 1, icon: icons.dessert, name: 'Bánh ngọt' },
+        { id: 2, icon: icons.iceCream, name: 'Kem' }
     ];
 
     const navigation = useNavigation()
