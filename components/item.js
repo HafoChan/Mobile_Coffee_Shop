@@ -1,35 +1,152 @@
-import { StyleSheet, Image, Text, TouchableOpacity, View} from "react-native"
+import { StyleSheet, Image, Text, TouchableOpacity, View } from "react-native"
 import { images, icons, colors } from "../constants"
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import db from '../firebaseSetting';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fetchData } from "../getData";
+import { useNavigation } from "@react-navigation/native";
 export {
     ItemCoffee_Other,
-    ItemBlendedIce_Yogurt
 }
 const heightItem = 240
 
 const ItemCoffee_Other = (props) => {
-    const {name, imgUrl, price} = props
-    return <TouchableOpacity style={stylesOtherItem.itemContainer}>
+    const [item,setItem] = useState()
+    const { name, imgUrl, price, category, nameUser, id } = props
+    const addCart = async () => {
+        const cart = await fetchData(category, id)
+        setItem(cart)
+    }
+    useEffect(() => {
+        if (item != null) {
+            pushCart();
+        }
+    }, [item]);
+    const pushCart = async () => {
+        console.log("inpush")
+        const load = doc(db, "Users", `${nameUser}`);
+        try {
+            const userDocSnap = await getDoc(load);
+            if (userDocSnap.exists()) {
+                const existingUser = userDocSnap.data();
+                const updatedCart = [...existingUser.cart];
+                let itemFound = false;
+    
+                updatedCart.forEach(itemtest => {
+                    if (itemtest.name === item.name) {
+                        // Nếu tìm thấy một mục với cùng tên, tăng số lượng lên 1
+                        console.log('vao')
+                        if (itemtest.size ==undefined)
+                            {
+                                itemtest.quantity++
+                            }
+                            else
+                            {
+                            // Tìm kiếm kích thước "M" trong mảng size của sản phẩm và thiết lập thuộc tính "quantity" nếu tìm thấy
+                            itemtest.size[0].quantity++;
+    
+                            }
+                        itemFound = true;
+                    }
+                });
+    
+                // Nếu không tìm thấy mục với cùng tên, thêm item mới vào cart
+                if (!itemFound) {
+                    console.log("hihiii")
+                    // Tạo một bản sao của item để tránh thay đổi trực tiếp dữ liệu ban đầu
+                    const newItem = { ...item };
+                    if (newItem.size ==undefined)
+                        {
+                            newItem.quantity = 1
+                        }
+                    else
+                    {
+                    // Tìm kiếm kích thước "M" trong mảng size của sản phẩm và thiết lập thuộc tính "quantity" nếu tìm thấy
+                        const sizeM = newItem.size.find(size => size.sizeName === "M");
+                        console.log(sizeM)
+                        if (sizeM) {
+                            sizeM.quantity = 1;
+                        }
+                    }
+                    // Thêm mục sản phẩm đã được cập nhật vào giỏ hàng
+                    updatedCart.push({ ...newItem});
+                }
+    
+                const updatedUser = {
+                    ...existingUser,
+                    name: `${nameUser}`,
+                    cart: item != null && updatedCart
+                };
+    
+                setDoc(load, updatedUser)
+                    .then(() => {
+                        console.log("Document successfully updated!");
+                    })
+                    .catch((error) => {
+                        console.error("Error updating document: ", error);
+                    });
+            }
+            else {
+                const dt = {
+                    name: `${nameUser}`,
+                    cart: []
+                };
+                console.log("----")
+                console.log(item)
+                // Kiểm tra xem item có tồn tại không
+                if (item) {
+                    console.log("hahaa")
+                    // Tạo một bản sao của item để tránh thay đổi trực tiếp dữ liệu ban đầu
+                    const newItem = { ...item };
+                    if (newItem.size ==undefined)
+                        {
+                            newItem.quantity = 1
+                        }
+                    else
+                    {
+                    // Tìm kiếm kích thước "M" trong mảng size của sản phẩm và thiết lập thuộc tính "quantity" nếu tìm thấy
+                    const sizeM = newItem.size.find(size => size.sizeName === "M");
+                    console.log(sizeM)
+                    if (sizeM) {
+                        sizeM.quantity = 1;
+                    }
+                }
+                    
+                    // Thêm mục sản phẩm đã được cập nhật vào giỏ hàng
+                    dt.cart.push(newItem);
+                }
+                
+                // Lưu giỏ hàng vào cơ sở dữ liệu hoặc thực hiện các thao tác khác tùy theo nhu cầu của bạn
+                setDoc(load, dt)
+            }
+        }
+    
+        catch (error) {
+            console.error("Error getting user document:", error);
+        }
+    
+    }
+    const navigation = useNavigation()
+
+    const pressItem = (category, id) => {
+        navigation.navigate('Detail', { category: category, id: id })
+    }
+    return <TouchableOpacity style={stylesOtherItem.itemContainer} onPress={() => pressItem(category, id)}>
         <View style={stylesOtherItem.imageContainer}>
-        <Image source={imgUrl} style={[styles.favoriteIcon, {marginLeft: 5}]}/>
-            <Image src={imgUrl} style={stylesOtherItem.image}/>
+            <Image src={imgUrl} style={stylesOtherItem.image} />
         </View>
-        <Text>{name}</Text>
         <View style={stylesOtherItem.itemDetailContainer}>
             <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>{name}</Text>
             <View style={stylesOtherItem.favoriteAndPriceContainer}>
                 <View>
                     <View style={stylesOtherItem.favoriteContainer}>
                         <Text style={styles.favoriteText}>200k</Text>
-                        <Image source={icons.heart} style={[styles.favoriteIcon, {marginLeft: 5}]}/>
+                        <Image source={icons.heart} style={[styles.favoriteIcon, { marginLeft: 5 }]} />
                     </View>
-                    <Text style={styles.itemPrice}>{price}</Text>
+                    <Text style={styles.itemPrice}>{price.toLocaleString()}<Text> VNĐ</Text></Text>
                 </View>
-                <TouchableOpacity>
-                <Image source={icons.addToCart} tintColor={colors.black} style={[styles.addIcon]}/>
+                <TouchableOpacity onPress={(addCart)}>
+                    <Image source={icons.addToCart} tintColor={colors.black} style={[styles.addIcon]} />
                 </TouchableOpacity>
             </View>
         </View>

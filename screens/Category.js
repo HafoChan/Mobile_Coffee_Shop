@@ -3,7 +3,7 @@ import { StyleSheet, Image, Text, TouchableOpacity, View, ScrollView, FlatList }
 import { icons, colors } from "../constants"
 import {ItemBlendedIce_Yogurt, ItemCoffee_Other} from "../components"
 import { useRoute } from '@react-navigation/native';
-import { fetchData } from '../getData';
+import { fetchData,getDataToCart } from '../getData';
 import { doc } from 'firebase/firestore';
 
 
@@ -11,65 +11,124 @@ const Category = () => {
     const route = useRoute();
     const [selectedTab, setSelectedTab] = useState('drinks');
     const [data, setData] = useState(null);
+    const [qCategory, setQCategory] = useState('coffehot')
 
-    useEffect(() => {
-        fetchData()
-            .then(fetchedData => {
-                console.log(fetchedData)
-                setData(fetchedData);
-            })
-    }, []);
-    
-    if (!data) {
-        return <Text>Loading...</Text>; // Hiển thị thông báo tải
-    }
-
-    // Trước khi bóc tách, kiểm tra nếu dữ liệu có sẵn
- 
-console.log(data)
-    
-    //console.log(size)
     const [coffeeItems, setCoffeeItems] = useState([
-        { id: '1', icon: icons.hotCoffee, name: 'Cà phê nóng', active: false },
-        { id: '2', icon: icons.iceCoffee, name: 'Cà phê đá', active: false },
-        { id: '3', icon: icons.blendedIce, name: 'Đá xay - Yogurt', active: false },
-        { id: '4', icon: icons.drink, name: 'Thức uống khác', active: false }
+        { id: 1, icon: icons.hotCoffee, name: 'Cà phê nóng', active: true },
+        { id: 2, icon: icons.iceCoffee, name: 'Cà phê đá', active: false },
+        { id: 3, icon: icons.blendedIce, name: 'Đá xay - Yogurt', active: false },
+        { id: 4, icon: icons.drink, name: 'Thức uống khác', active: false }
     ]);
     
     const [dessertItems, setDessertItems] = useState([
-        { id: '1', icon: icons.dessert, name: 'Bánh ngọt', active: false },
-        { id: '2', icon: icons.iceCream, name: 'Kem', active: false }
+        { id: 1, icon: icons.dessert, name: 'Bánh ngọt', active: false },
+        { id: 2, icon: icons.iceCream, name: 'Kem', active: false }
     ]);
 
+    const chooseCategory = (tab, id) => {
+        if (tab == 'drinks') {
+            if (id ==  1)
+                return 'coffehot'
+            if (id == 2)
+                return 'coffecold'
+            if (id == 3)
+                return 'Yogurt'
+            return 'Other'
+        } else {
+            if (id == 1)
+                return 'Cake'
+            return 'IceCream'
+        }
+    }
 
+    useEffect(() => {
+        if (route.params?.selectedCategory && route.params?.id) {
+            const updateCategory = async () => {
+                let updatedCoffeeItems
+                let updatedDessertItems
+                if (route.params.selectedCategory == 'drinks') {
+                    updatedCoffeeItems = coffeeItems.map(item => ({
+                        ...item,
+                        active: item.id == route.params.id
+                    }));
 
-    
+                    const newQCategory = chooseCategory('drinks', route.params.id)
+                    setQCategory(newQCategory);
+
+                    updatedDessertItems = dessertItems.map(item => ({
+                        ...item,
+                        active: false
+                    }));
+                } else if (route.params.selectedCategory == 'desserts') {
+                    updatedDessertItems = dessertItems.map(item => ({
+                        ...item,
+                        active: item.id == route.params.id
+                    }));
+
+                    const newQCategory = chooseCategory('desserts', route.params.id)
+                    setQCategory(newQCategory);
+
+                    updatedCoffeeItems = coffeeItems.map(item => ({
+                        ...item,
+                        active: false
+                    }));
+                }
+                setDessertItems(updatedDessertItems);
+                setCoffeeItems(updatedCoffeeItems);
+            }
+            updateCategory();
+            setSelectedTab(route.params.selectedCategory);
+        }
+    }, [route.params?.selectedCategory, route.params?.id]);
+
+    useEffect(() => {
+        const getData = async () => {
+            const categoryData = await fetchData(qCategory, null);
+            setData(categoryData);
+        };
+        getData();
+    }, [qCategory]);
+
     const pressCategory = (category, id) => {
         let updatedCoffeeItems;
         let updatedDessertItems;
-        if (category === 'drinks') {
+        if (category == 'drinks') {
             updatedCoffeeItems = coffeeItems.map(item => ({
                 ...item,
-                active: item.id === id
-            }));
+                active: item.id == id
+            }))
+
+            const newQCategory = chooseCategory('drinks', id)
+            setQCategory(newQCategory);
+
             updatedDessertItems = dessertItems.map(item => ({
                 ...item,
                 active: false
-            }));
-            
-        } else if (category === 'desserts') {
+            }))
+        } else if (category == 'desserts') {
             updatedDessertItems = dessertItems.map(item => ({
                 ...item,
-                active: item.id === id
-            }));
+                active: item.id == id
+            }))
+
+            const newQCategory = chooseCategory('desserts', id)
+            setQCategory(newQCategory);
+
             updatedCoffeeItems = coffeeItems.map(item => ({
                 ...item,
                 active: false
-            }));
+            }))
             
         }
-        setCoffeeItems(updatedCoffeeItems);
-        setDessertItems(updatedDessertItems);
+        setCoffeeItems(updatedCoffeeItems)
+        setDessertItems(updatedDessertItems)
+    }
+
+    const showPrice = (item) => {
+        const {size} = item
+        if (size != undefined)
+            return item.size[0].price
+        return item.price
     }
 
     const Item = ({ category, id, icon, name, active }) => (
@@ -119,16 +178,12 @@ console.log(data)
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
             <View style={styles.itemContainer}>
-            {data && ( // Render content only if data is available
-            <>
-                <ItemCoffee_Other/>
-                <ItemCoffee_Other/>
-                <ItemCoffee_Other/>
-            </>
-            )}
-            {!data && ( // Display loading indicator or message if no data
-                <Text>Đang tải...</Text>
-            )}
+                {!data && (
+                    <Text>Đang tải...</Text>
+                )}
+                {data != null && data.map(item => {
+                    return(<ItemCoffee_Other key={item.id} name={item.name} nameUser={route.params.name} imgUrl={item.imgUrl} price={showPrice(item)} category={qCategory} id={item.id}/>)
+                })}
             </View>
         </ScrollView>
     </View>

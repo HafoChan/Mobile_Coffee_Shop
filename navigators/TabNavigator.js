@@ -12,9 +12,8 @@ import Cart from '../screens/Cart';
 const Tab = createBottomTabNavigator()
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
-
 const TabNavigator = ({route}) => {
-    console.log(route.params.name)
+    
     return (
         <Tab.Navigator 
             screenOptions={{
@@ -28,12 +27,12 @@ const TabNavigator = ({route}) => {
                     return <Image source={icons.home} style={styles.icon26} tintColor={focused?colors.primary:colors.black}/>
                 }
             }}></Tab.Screen>
-            <Tab.Screen name='Category' component={Category} options={{
+            <Tab.Screen name='Category' component={Category} initialParams={{name:route.params.name}} options={{
                 tabBarIcon: ({focused, color, size}) => {     
                     return <Image source={focused?icons.category_fill:icons.category} style={styles.icon26} tintColor={focused?colors.primary:colors.black}/>
                 }
             }}></Tab.Screen>
-            <Tab.Screen name='Cart' component={Cart} options={{
+            <Tab.Screen name='Cart' component={Cart} initialParams={{name:route.params.name}} options={{
                 tabBarIcon: ({focused, color, size}) => {     
                     return <Image source={icons.basket} style={styles.basket} tintColor={focused?colors.primary:colors.black} resizeMode='stretch'/>
                 }

@@ -9,10 +9,12 @@ const App = ({navigation}) => {
     const [selectedTab,setSelectedTab] = useState('signin');
     const changeTab = (tab) => {
         setSelectedTab(tab);}
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('a1@gmail.com');
+    const [password, setPassword] = useState('123456');
     const [userCredential, setuserCredential] = useState('');
+    
     const loginfire = () => {
+
         auth().signInWithEmailAndPassword(email, password)
             .then((res) => {
                 console.log(res)

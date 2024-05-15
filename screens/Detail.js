@@ -1,16 +1,20 @@
-import { StyleSheet, Image, Text, TouchableOpacity, View, ImageBackground, ScrollView } from "react-native";
-import { colors, icons, images } from "../constants";
-import { useState } from "react";
+import { StyleSheet, Image, Text, TouchableOpacity, View, ScrollView } from "react-native";
+import { colors, icons } from "../constants";
+import { useState, useEffect } from "react";
 import { ExpandableText } from "../components";
-
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { fetchData } from '../getData';
 const Detail = () => {
 
-    const [size, setSize] = useState('M')
+    const route = useRoute()
+    const [data, setData] = useState()
+    const [sizeChoose, setSizeChoose] = useState('M')
     const [quantity, setQuantity] = useState(1)
     const [favourite, setFavourite] = useState(false)
-
-    const pressSize = (size) => {
-        setSize(size)
+    const [loading, setLoading] = useState(true)
+    const navigate = useNavigation()
+    const pressSize = (sizeChoose) => {
+        setSizeChoose(sizeChoose)
     }
 
     const pressQuantity = (action) => {
@@ -24,71 +28,101 @@ const Detail = () => {
         setFavourite(!favourite)
     }
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.imageContainer}>
-                <View style={styles.innerImageContainer}>
-                    <View style={styles.overlayCircle}/>
-                    <Image source={images.item6} style={styles.image} resizeMode="cover"/>
+    useEffect(() => {
+        const getData = async () => {
+            const categoryData = await fetchData(route.params?.category, route.params?.id)
+            setData(categoryData)
+            setLoading(false)
+        };
+        getData();
+    }, [route.params?.category, route.params?.id])
+
+    if (loading) {
+        return <Text>Đang tải...</Text>
+    }
+
+    const {description, imgUrl, name, size} = data
+
+    let sizeMediumPrice = null;
+    let sizeLargePrice = null;
+    let checkSize = false
+
+    if (size != undefined) {
+        sizeMediumPrice = size[0].price
+        sizeLargePrice = size[1].price
+        checkSize = true
+    }
+
+    const back = () => {
+        navigate.goBack()
+    }
+
+    return <View style={styles.container}>
+            <View style={styles.container}>
+                <View style={styles.imageContainer}>
+                    <View style={styles.innerImageContainer}>
+                        <View style={styles.overlayCircle}/>
+                        <Image src={imgUrl} style={styles.image} resizeMode="cover"/>
+                    </View>
+                    <TouchableOpacity style={styles.backButton} onPress={() => back()}>
+                        <Image source={icons.back} style={styles.backIcon} resizeMode="stretch"/>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.backButton}>
-                    <Image source={icons.back} style={styles.backIcon} resizeMode="stretch"/>
-                </TouchableOpacity>
+
+                <ScrollView style={styles.detailsContainer} showsVerticalScrollIndicator={false}>
+                    <View style={styles.detailContent}>
+                        <View style={styles.titleContainer}>
+                            <Text style={styles.title}>{name}</Text>
+                            <TouchableOpacity onPress={() => pressFavourite()}>
+                                <Image source={favourite ? icons.heart : icons.love} tintColor={colors.primary} style={styles.icon26}/>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.priceContainer}>
+                            {checkSize && <Text style={styles.priceText}>{sizeChoose == "M" ? sizeMediumPrice : sizeLargePrice}<Text> VNĐ</Text></Text>}
+                            {!checkSize && <Text style={styles.priceText}>{data.price}<Text> VNĐ</Text></Text>}
+                        </View>
+                        
+                        <Text style={styles.sectionTitle}>Mô tả</Text>
+                        <ExpandableText 
+                            text={description}
+                            maxLength={100}
+                        />
+                        
+                        <View style={styles.selectionRow}>
+                            { checkSize && <Text style={styles.selectionTitle}>Size</Text> }
+                            <Text style={styles.selectionTitle}>Số lượng</Text>
+                        </View>
+                        <View style={styles.selectionContainer}>
+                            {checkSize && (<View style={styles.sizeContainer}>
+                                <TouchableOpacity onPress={() => {pressSize('M')}}>
+                                    <Image source={icons.sizeM} tintColor={sizeChoose=='M' ? colors.third : 'rgb(120, 120, 120)'} style={styles.sizeIcon}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => {pressSize('L')}}>
+                                    <Image source={icons.sizeL} tintColor={sizeChoose=='L' ? colors.third : 'rgb(120, 120, 120)'} style={styles.sizeIcon}/>
+                                </TouchableOpacity>
+                            </View>)}
+                            <View style={styles.quantityContainer}>
+                                <TouchableOpacity onPress={() => pressQuantity('minus')} disabled={quantity > 0 ? false : true}>
+                                    <Image source={icons.minus} tintColor={colors.item} style={[styles.quantityButton, { backgroundColor: quantity > 0 ? colors.third : 'rgb(120, 120, 120)' }]}/>
+                                </TouchableOpacity>
+                                <Text style={styles.quantity}>{quantity}</Text>
+                                <TouchableOpacity onPress={() => pressQuantity('add')}>
+                                    <Image source={icons.plus} tintColor={colors.item} style={styles.quantityButton}/>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.button}>
+                                <Image source={icons.basket} style={styles.buttonIcon} tintColor={colors.secondary} resizeMode="stretch"/>
+                                <Text style={styles.buttonText}>Thêm vào giỏ hàng</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </ScrollView>
             </View>
-
-            <ScrollView style={styles.detailsContainer} showsVerticalScrollIndicator={false}>
-                <View style={styles.detailContent}>
-                    <View style={styles.titleContainer}>
-                        <Text style={styles.title}>Coffee Latte</Text>
-                        <TouchableOpacity onPress={() => pressFavourite()}>
-                            <Image source={favourite ? icons.heart : icons.love} tintColor={colors.primary} style={styles.icon26}/>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.priceContainer}>
-                        <Text style={styles.priceText}>100.000<Text> VNĐ</Text></Text>
-                    </View>
-                    
-                    <Text style={styles.sectionTitle}>Mô tả</Text>
-                    <ExpandableText 
-                        text="Trà xanh đá xay là thức uống được kết hợp giữa kem tươi béo ngậy, sữa ngọt ngào và lá trà xanh Nhật Bản. Matcha đá xay có vị chát nhẹ và hương thơm quyến rũ đặc trưng của lá trà xanh. Matcha có tác dụng tốt với thể chất và tinh thần, kích thích làm tỉnh táo và giảm căng thẳng."
-                        maxLength={100}
-                    />
-                    
-                    <View style={styles.selectionRow}>
-                        <Text style={styles.selectionTitle}>Size</Text>
-                        <Text style={styles.selectionTitle}>Số lượng</Text>
-                    </View>
-                    <View style={styles.selectionContainer}>
-                        <View style={styles.sizeContainer}>
-                            <TouchableOpacity onPress={() => {pressSize('M')}}>
-                                <Image source={icons.sizeM} tintColor={size=='M' ? colors.third : 'rgb(120, 120, 120)'} style={styles.sizeIcon}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => {pressSize('L')}}>
-                                <Image source={icons.sizeL} tintColor={size=='L' ? colors.third : 'rgb(120, 120, 120)'} style={styles.sizeIcon}/>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.quantityContainer}>
-                            <TouchableOpacity onPress={() => pressQuantity('minus')} disabled={quantity > 0 ? false : true}>
-                                <Image source={icons.minus} tintColor={colors.item} style={[styles.quantityButton, { backgroundColor: quantity > 0 ? colors.third : 'rgb(120, 120, 120)' }]}/>
-                            </TouchableOpacity>
-                            <Text style={styles.quantity}>{quantity}</Text>
-                            <TouchableOpacity onPress={() => pressQuantity('add')}>
-                                <Image source={icons.plus} tintColor={colors.item} style={styles.quantityButton}/>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button}>
-                            <Image source={icons.basket} style={styles.buttonIcon} tintColor={colors.secondary} resizeMode="stretch"/>
-                            <Text style={styles.buttonText}>Thêm vào giỏ hàng</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </ScrollView>
-        </View>
-    );
+    </View>
 }
 
 const styles = StyleSheet.create({
