@@ -24,8 +24,11 @@ const ItemCoffee_Other = (props) => {
     }, [item]);
     const pushCart = async () => {
         console.log("inpush")
+        console.log(nameUser)
         const load = doc(db, "Users", `${nameUser}`);
+        console.log("no")
         try {
+        
             const userDocSnap = await getDoc(load);
             if (userDocSnap.exists()) {
                 const existingUser = userDocSnap.data();
@@ -143,7 +146,6 @@ const ItemCoffee_Other = (props) => {
                         <Text style={styles.favoriteText}>200k</Text>
                         <Image source={icons.heart} style={[styles.favoriteIcon, { marginLeft: 5 }]} />
                     </View>
-                    <Text style={styles.itemPrice}>{price.toLocaleString()}<Text> VNĐ</Text></Text>
                     <Text style={styles.itemPrice}>{price.toLocaleString()}<Text> VNĐ</Text></Text>
                 </View>
                 <TouchableOpacity onPress={(addCart)}>

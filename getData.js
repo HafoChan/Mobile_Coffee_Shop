@@ -1,7 +1,6 @@
 import { collection, query, where, getDocs} from "firebase/firestore";
 import db from './firebaseSetting';
 
-<<<<<<< HEAD
 async function loadDataToCart() {
     const q = query(collection(db, "Users"),where("name","==","a1"));
     try {
@@ -23,9 +22,6 @@ async function loadDataToCart() {
         console.error("Error fetching document:", error);
     }
 }
-=======
-// Define the fetchData function outside of the App component
->>>>>>> a940d8a5272009ab16d25fc4c2ff5e513c9c7a54
 async function fetchData(category, id) {
     if (id == null)
         q = collection(db, category)
@@ -46,8 +42,4 @@ async function fetchData(category, id) {
     }
 }
 
-<<<<<<< HEAD
 export { loadDataToCart, fetchData}; // Export the fetchData function
-=======
-export { fetchData }
->>>>>>> a940d8a5272009ab16d25fc4c2ff5e513c9c7a54

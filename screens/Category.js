@@ -93,7 +93,6 @@ const Category = () => {
         let updatedCoffeeItems;
         let updatedDessertItems;
         if (category == 'drinks') {
-        if (category == 'drinks') {
             updatedCoffeeItems = coffeeItems.map(item => ({
                 ...item,
                 active: item.id == id
@@ -106,7 +105,7 @@ const Category = () => {
                 ...item,
                 active: false
             }))
-        } 
+        
         } else if (category == 'desserts') {
             updatedDessertItems = dessertItems.map(item => ({
                 ...item,
@@ -121,11 +120,11 @@ const Category = () => {
                 active: false
             }))
             }
-            
+            setCoffeeItems(updatedCoffeeItems)
+            setDessertItems(updatedDessertItems)
         }
-        setCoffeeItems(updatedCoffeeItems)
-        setDessertItems(updatedDessertItems)
-    
+
+
 
     const Item = ({ category, id, icon, name, active }) => (
         <TouchableOpacity style={[styles.categoryItem, active && styles.activeCategoryItem]}
