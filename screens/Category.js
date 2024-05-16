@@ -3,8 +3,7 @@ import { StyleSheet, Image, Text, TouchableOpacity, View, ScrollView, FlatList }
 import { icons, colors } from "../constants"
 import {ItemBlendedIce_Yogurt, ItemCoffee_Other} from "../components"
 import { useRoute } from '@react-navigation/native';
-import { fetchData,getDataToCart } from '../getData';
-import { doc } from 'firebase/firestore';
+import { fetchData, getDataToCart } from '../getData';
 
 
 const Category = () => {
@@ -190,6 +189,7 @@ const Category = () => {
         </ScrollView>
     </View>
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,

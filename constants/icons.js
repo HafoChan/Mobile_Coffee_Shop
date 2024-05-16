@@ -18,6 +18,10 @@ export default {
     addToCart: require('../assets/add-to-cart.png'),
     sizeM: require('../assets/sizeM.png'),
     sizeL: require('../assets/sizeL.png'),
+    account: require('../assets/account.png'),
+    logout: require('../assets/log-out.png'),
+    orderHistory: require('../assets/order-history.png'),
+    edit: require('../assets/edit.png'),
 
 
     drink: require('../assets/drink.png'),

@@ -19,9 +19,7 @@ const Home = ({route}) => {
     const navigation = useNavigation()
 
     const PressCategory = (category, id) => {
-        console.log('-----')
-        console.log(category)
-        navigation.navigate('Category', { selectedCategory: category, id: id, name:route.params.name })
+        navigation.navigate('Category', { selectedCategory: category, id: id,name:route.params.name })
     }
 
     const MenuItem = ({ category, id, icon, name }) => (
