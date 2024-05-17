@@ -1,117 +1,96 @@
 import { Image, Text, TouchableOpacity, View, ScrollView, StyleSheet, Dimensions, TextInput } from "react-native"
 import React, { useState, useEffect,useCallback} from 'react';
 import { useRoute, useFocusEffect } from '@react-navigation/native';
-
 import { icons, images } from "../constants"
 import { CartItem } from "../components"
 import { loadDataToCart } from "../getData";
 import { changeCart,check } from "../components/cart";
 import { pushCart } from "../pushCart";
 import { updateQuantity } from "../updateQuantity";
-import { navi,getnavi } from "../const";
 
 const screenWidth = Dimensions.get('window').width
 
 const Cartt = ({ route }) => {
     const [costTotal, setCostTotal] = useState(0);
     const [coupon, setCoupon] = useState();
-    const [feeShip, setFeeShip] = useState(20000);
+    const [feeShip, setFeeShip] = useState(20000)
     const [showTotal, setShowTotal] = useState(false);
+    const [dataCart, setDataCart] = useState([])
+
     const toggleTotal = () => {
         updateQuantityFunction()
         setShowTotal(!showTotal);
     };
-    const [dataCart, setDataCart] = useState([])
-        const getData = async () => {
-            const dt = await loadDataToCart(route.params.name)
-            setDataCart(dt)
-        }
-        useFocusEffect(
-            useCallback(() => {
-                getData();
-            }, [])
-        );
-    const calcuTotal=(a,b,c)=>{
-        if (c==null)
-            return a+b
-        return a+b-((a*c)/100)
-    }
-    // const uniqueItems = Object.values(changeCart.reduce((acc, item) => {
-    //     // Check if the item id is already in the accumulator
-    //     if (item.size!=null)
-    //         {
-    //     if (!acc[item.name]) {
-    //         // If not, add the item
-    //         acc[item.id] = item;
-    //     } else if (item.quantity > acc[item.id].quantity) 
-    //         // If it is, keep the one with the highest quantity
-    //          {
-    //             acc[item.id] = item;
-    //         }
-    //     else if (item.size!=acc[item.id].size)
-    //     {
-    //         acc[item.id] = item;
-
-    //     }
-    //     else{
-    //         acc[item.id] = item;
-
-    //     }
-        
-    // }
-    //     return acc;
-    // }, {}));    
-        const updateQuantityFunction=()=>{
-            changeCart.forEach((item)=>{
-                console.log("++++_____________")
-                console.log(item)
-                updateQuantity(db,route.params.name,item,item.quantity,item.size)
-            })
-        }
-
     
+    const getData = async () => {
+        const dt = await loadDataToCart(route.params.name)
+        setDataCart(dt)
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            getData();
+        }, [])
+    )
+
+    const calcuTotal=(a,b,c)=>{
+        if (c == null)
+            return a+b
+        return a + b - ((a * c) / 100)
+    }
+
+    const updateQuantityFunction = () => {
+        changeCart.forEach((item) => {
+            updateQuantity(db, route.params.name, item, item.quantity, item.size)
+        })
+    }
+
     const UiTotal = () => {
         return (
             <View>
                 <View style={styles.price}>
-                    <Text style={styles.fontPrice}>Subtotal</Text>
-                    <Text style={styles.fontPrice}>{costTotal}</Text>
+                    <Text style={styles.fontPrice}>Tổng tiền hàng</Text>
+                    <Text style={styles.fontPrice}>{costTotal.toLocaleString()}</Text>
                 </View>
                 <View style={styles.price}>
-                    <Text style={styles.fontPrice}>Fee Ship</Text>
-                    <Text style={styles.fontPrice}>{feeShip}</Text>
+                    <Text style={styles.fontPrice}>Phí vận chuyển</Text>
+                    <Text style={styles.fontPrice}>{feeShip.toLocaleString()}</Text>
                 </View>
                 <View style={styles.price}>
-                    <Text style={styles.fontPrice}>Coupon</Text>
-                    <Text style={styles.coupontext}>-{coupon?coupon:0}%</Text>
+                    <Text style={styles.fontPrice}>Giảm giá</Text>
+                    <Text style={styles.coupontext}>- {coupon?coupon:0}%</Text>
                 </View>
                 <View style={styles.boderBottom1}></View>
                 <View style={styles.price}>
-                    <Text style={styles.totalprice}>Total</Text>
-                    <Text style={styles.totalprice}>{calcuTotal(costTotal,feeShip,coupon)}</Text>
+                    <Text style={styles.totalprice}>Tổng thanh toán</Text>
+                    <Text style={styles.totalprice}>{ calcuTotal(costTotal, feeShip, coupon).toLocaleString() }</Text>
                 </View>
                 <TouchableOpacity style={styles.buttonCheckout}>
-                    <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold' }}>Checkout</Text>
+                    <Text style={{ color: 'white', fontSize: 22, fontWeight: 'bold' }}>Đặt hàng</Text>
                 </TouchableOpacity>
             </View>
         )
     }
-    useEffect(()=>{
+    
+    useEffect(() => {
         let totalCost = 0;
-
-    processCartData(dataCart).forEach((item) => {
-        if (item.size == undefined) {
-            totalCost += item.price * item.quantity;
-        } else {
-            if (item.quantity > 0) {
+        processCartData(dataCart).forEach((item) => {
+            if (item.size == undefined) {
                 totalCost += item.price * item.quantity;
-            } else if (item.quantity > 0) {
-                totalCost += item.price * item.quantity;
+            } else {
+                if (item.quantity > 0) {
+                    totalCost += item.price * item.quantity;
+                } else if (item.quantity > 0) {
+                    totalCost += item.price * item.quantity;
+                }
             }
-        }
-    });
-    setCostTotal(totalCost);
-    },[dataCart])
+        });
+        setCostTotal(totalCost);
+    }, [dataCart])
+
+    // console.log("------------")
+    // console.log(dataCart)
+    // console.log("------------")
     
     const processCartData = (dataCart) => {
         // Tạo mảng mới để lưu trữ các mục đã xử lý
@@ -129,21 +108,21 @@ const Cartt = ({ route }) => {
                             price: sizeObj.price,
                             quantity: sizeObj.quantity
                         });
-
                     }
-
                 });
             } else if (item.quantity && item.quantity > 0) {
                 // Nếu mục không có thuộc tính size, thêm trực tiếp vào mảng mới
                 processedCart.push(item);
             }
         });
-
         return processedCart;
-    };
+    }
+
     return (
         <View style={styles.container}>
-            <Text style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center', alignSelf: 'center', marginTop: 10, marginBottom: 20, color: 'black' }}>Cart</Text>
+            <View style={styles.header}>
+                <Text style={styles.titleHeader}>Giỏ hàng</Text>
+            </View>
             <View style={{ flex: 1, maxHeight: "70%" }}>
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     {dataCart && processCartData(dataCart).map((item, index) => (
@@ -157,22 +136,20 @@ const Cartt = ({ route }) => {
                             id={item.id}
                             item={item}
                             userName ={route.params.name}
-
                         />
                     ))}
                 </ScrollView>
             </View>
             <View style={styles.ContainerCoupon}>
-                <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'black', marginBottom: 10 }}>Coupon Code</Text>
+                <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'black', marginBottom: 10 }}>Mã giảm giá</Text>
                 <View style={styles.buttonCoupon}>
                     <Image source={images.discount} style={{ height: 30, width: 30, marginLeft: 10, marginVertical: 5 }} />
                     <View style={{ width: screenWidth - 160 }}>
-                        <TextInput placeholder="Input coupon" onChangeText={(coupon) => setCoupon(coupon<100&&coupon)} value={coupon} style={styles.fontPrice}>
-
+                        <TextInput placeholder="Nhập mã giảm giá" onChangeText={(coupon) => setCoupon(coupon < 100 && coupon)} value={coupon} style={styles.fontPrice}>
                         </TextInput>
                     </View>
                     <TouchableOpacity style={styles.buttonSubmit} onPress={(toggleTotal)}>
-                        <Text style={{ textAlign: 'center', color: 'white' }}>{showTotal ? "Cancel" : "Submit"}</Text>
+                        <Text style={{ textAlign: 'center', color: 'white', fontSize: 15 }}>{showTotal ? "Hủy" : "Xác nhận"}</Text>
                     </TouchableOpacity>
 
                 </View>
@@ -180,18 +157,30 @@ const Cartt = ({ route }) => {
             <View style={styles.total}>
                 {showTotal && <UiTotal />}
             </View>
-            <View style={{ flex: showTotal ? 0.3 : 0 }}>
-
-            </View>
+            <View style={{ flex: showTotal ? 0.3 : 0 }}/>
 
         </View>
     )
 
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#EEEEEE'
+    },
+    header: {
+        height: '8%',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    titleHeader: {
+        fontSize: 22,
+        fontWeight: '700',
+        color: 'black',
+        marginTop: 5,
+        marginBottom: 10
     },
     ContainerCoupon: {
         marginTop: 20,
@@ -201,7 +190,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: 'lightgray',
         width: screenWidth - 40,
-
         borderRadius: 20,
         height: 40
     },
@@ -234,7 +222,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 20
     },
     totalprice: {
-        fontSize: 24,
+        fontSize: 22,
         fontWeight: 'bold',
         color: 'black'
     },
@@ -253,4 +241,5 @@ const styles = StyleSheet.create({
         color: 'green'    }
 }
 )
+
 export default Cartt
