@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, Alert } from 'react-native';
 import { colors,images ,icons} from '../constants';
-// import { loadQuantity } from '../getData';
-// import { collection,query,where,setDoc } from 'firebase/firestore';
+import { loadQuantity } from '../getData';
+import { collection,query,where,setDoc,and,getDocs } from 'firebase/firestore';
+import { deleteItemFromCart } from '../getData';
 const screenWidth = Dimensions.get('window').width
 console.log(screenWidth)
-
+export const changeCart=[]
 const CartItem =(props)=>{
-    const [quantityvalue,setQuantity] = useState(1);
-    const {id,name,size,imgUrl,price,quantity} = props
+    const {id,name,size,imgUrl,price,quantity,item,userName} = props
+    const [quantityvalue,setQuantity] = useState(quantity);
     useEffect(()=>{
-        // console.log("---------------------------------------------")
-        // const drink = query(collection(db,"Userss"),where("id","==",id))
-        // console.log(drink)
-        // setDoc(drink,quantityvalue)
-        // console.log(drinkData)
-        setQuantity(quantity)
-    },[quantity])
+        console.log("-------------")
+        changeCart.slice(0,changeCart.length)
+        console.log(changeCart)
+    },[userName])
+    useEffect(()=>{
+        console.log("+++++++++++++")
+        console.log(quantityvalue)
+        item.quantity = quantityvalue
+        changeCart.push(item)
+    },[quantityvalue])
     const PressButton=(name)=>{
         if (name==="add")
         {
@@ -26,29 +30,31 @@ const CartItem =(props)=>{
         {
             setQuantity(quantityvalue-1)
         }
+console.log("{}}")
+console.log(changeCart)
 
     }
-    // if (name1=='banh')
-    //     {
-    //     const {price} = props
-    //     setPrice(price)
-    //     }
-    // else
-    // {
-    //     const {price} = {price:5}
-    //     setPrice(price)
-    // }
+    const deleteItem = (name,size)=>{
+        const b ={}
+        const a =async(b)=>{
+             b = await deleteItemFromCart(name,size)
+            
+        }
+        a(b) 
+        console.log(b)
+}
+
     return(
             <TouchableOpacity style={styles.contain}>
                 <Image style={{width:100,height:"100%",borderRadius:20, marginRight:30}}source={{uri:imgUrl}}/>
                 <View style={styles.text}>
                     <View style={styles.trash}> 
-                        <Text style={{color:'orange',fontSize:16}}>{size!=undefined?"size"+size[0].sizeName:"Other"}</Text>
-                         <TouchableOpacity>
+                        <Text style={{color:'orange',fontSize:17}}>{size!=undefined?"size : "+size:"Other"}</Text>
+                         <TouchableOpacity onPress={()=>deleteItem(userName,size)}>
                             <Image source={images.trash} style={{width:20,height:20}}/>
                         </TouchableOpacity>
                     </View>
-                <Text style={{fontSize:20,fontWeight:"bold",color:'black'}}>{name}</Text>
+                <Text style={{fontSize:20,fontWeight:"bold",color:'black',width:screenWidth-140}}>{name}</Text>
                     <View style={{flexDirection:'row',marginTop:10,justifyContent:'space-between',width:screenWidth-180}}>
                         <Text style={{fontSize:20,fontWeight:'bold',color:'orange'}}>${price}</Text>
                         <View style={styles.button}>
@@ -99,4 +105,5 @@ const styles = StyleSheet.create({
 
     }
 })
+
 export default CartItem

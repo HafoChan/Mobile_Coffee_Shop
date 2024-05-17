@@ -1,22 +1,17 @@
-import { collection, query, where, getDocs} from "firebase/firestore";
+import { collection, query, where, getDocs, doc} from "firebase/firestore";
 import db from './firebaseSetting';
 
-async function loadDataToCart() {
-    const q = query(collection(db, "Users"),where("name","==","a1"));
+async function loadDataToCart(name) {
+    const q = query(collection(db, "Users"),where("name","==",name));
     try {
         const docSnap = await getDocs(q);
-        console.log("vo dc ")
         const docs = [];
         docSnap.forEach(docdata => {
-            console.log(docdata.id, " => ", docdata.data());
-            console.log(docdata.id)
-            console.log('in')
+            // console.log(docdata.id, " => ", docdata.data());
             docdata.data().cart.forEach(item=>{
-                console.log(item)
                 docs.push(item)
             })
         });
-        console.log(docs)
         return docs; // Trả về bản ghi đầu tiên (vì bạn đang tìm kiếm theo ID)
     } catch (error) {
         console.error("Error fetching document:", error);
@@ -41,5 +36,23 @@ async function fetchData(category, id) {
         console.error("Error fetching document:", error)
     }
 }
+async function deleteItemFromCart(name,size) {
+    const q = query(collection(db, "Users"),where("cart","array-contains","description"))
+    try {
+        const docSnap = await getDocs(q);
+        const docs = [];
+        console.log(docSnap)
+        docSnap.forEach(docdata => {
+            console.log("vao dcccc")
+            console.log(docdata.id, " => ", docdata.data());
+            docdata.data().cart.forEach(item=>{
+                docs.push(item)
+            })
+        });
+        return docs[0]; // Trả về bản ghi đầu tiên (vì bạn đang tìm kiếm theo ID)
+    } catch (error) {
+        console.error("Error fetching document:", error);
+    }
+}
 
-export { loadDataToCart, fetchData}; // Export the fetchData function
+export { loadDataToCart, fetchData,deleteItemFromCart}; // Export the fetchData function

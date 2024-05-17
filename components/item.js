@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: colors.black,
         marginBottom: 2,
+        flexWrap:'wrap'
     },
     itemPrice: {
         fontSize: 16,

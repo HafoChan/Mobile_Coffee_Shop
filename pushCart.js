@@ -1,5 +1,5 @@
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-
+import { getnavi, navi } from './const';
 export const pushCart = async (db, nameUser, item, quantity, size) => {
     const load = doc(db, "Users", `${nameUser}`);
     const newItem = { ...item };
@@ -12,9 +12,12 @@ export const pushCart = async (db, nameUser, item, quantity, size) => {
 
             updatedCart.forEach(itemtest => {
                 if (itemtest.name == item.name) {
+                    console.log(itemtest.size)
+                    console.log(item.size)
                     if (itemtest.size == undefined) {
                         itemtest.quantity += quantity;
-                    } else {
+                    }
+                     else {
                         if (size === "M")
                             itemtest.size[0].quantity += quantity;
                         else {

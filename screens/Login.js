@@ -9,7 +9,7 @@ const App = ({navigation}) => {
     const [selectedTab,setSelectedTab] = useState('signin');
     const changeTab = (tab) => {
         setSelectedTab(tab);}
-    const [email, setEmail] = useState("a1@gmail.com");
+    const [email, setEmail] = useState("a3@gmail.com");
     const [password, setPassword] = useState("123456");
     const [userCredential, setuserCredential] = useState();
     const loginfire = () => {

@@ -11,6 +11,7 @@ export default {
     star :require('../assets/star2.png'),
     dele :require('../assets/x1.png'),
     trash :require('../assets/trash.png'),
+    love : require('../assets/love.png'),
     discount : require('../assets/discount.png')
 
 

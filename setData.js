@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, doc, setDoc,query, where } from 'firebase/firestore';
 import db from './firebaseSetting'; // Import your Firebase configuration
 
 function App() {
@@ -527,8 +527,6 @@ function App() {
                         ]
                       }
                     ]
-                
-                
                 console.log(typeof(drinkDataArray))
                 console.log("do")
                 drinkcold.forEach((drinkData) => {
