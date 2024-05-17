@@ -60,18 +60,18 @@ export default function Register({ navigation, route }) {
         <View style={{flexDirection:'row',justifyContent:'space-between',height:"20%"}}>
             <TouchableOpacity  style={selectedTab === 'signin' ? styles.activeTabButton : styles.unActiveTabButton}
                     onPress={(login_page)} >
-                <Text style={styles.title}>Sign in</Text>
+                <Text style={styles.title}>Đăng nhập</Text>
             </TouchableOpacity>
             <TouchableOpacity style={selectedTab === 'signup' ? styles.activeTabButton : styles.unActiveTabButton} 
             onPress={()=>{}}>
-                <Text style={styles.title}>Sign up</Text>
+                <Text style={styles.title}>Đăng ký</Text>
             </TouchableOpacity>
         </View>
         <View style ={styles.inputContainer}> 
             <Image source ={icons.email} style={styles.icon} resizeMode='contain'/>
             <TextInput
             style={styles.input}
-            placeholder="Email Adress"
+            placeholder="Email"
             onChangeText={(email) => { setEmail(email) }}            value={email}
             />
         </View>
@@ -90,14 +90,14 @@ export default function Register({ navigation, route }) {
 
         <TextInput
           style={styles.input}
-          placeholder="Confirm password"
+          placeholder="Xác nhận mật khẩu"
           secureTextEntry={true}
             onChangeText={(confirm)=>setConfirm(confirm)}  value={Confirm==password?password:Confirm}
         />
         </View>
 
         <TouchableOpacity style={styles.button} onPress={(register_firebase)}>
-          <Text style={styles.buttonText}>Sign up</Text>
+          <Text style={styles.buttonText}>Đăng ký</Text>
         </TouchableOpacity>
 
       </View>
@@ -109,86 +109,78 @@ export default function Register({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#8B4513",
+    backgroundColor: colors.item,
     alignItems: 'center',
   },
-  inputContainer:{
-    flexDirection:'row',
-    alignItems:'center',
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderBottomWidth: 2,
     borderColor: colors.primary,
-    marginBottom:10,
+    marginBottom: 10,
   },
-  fontOr:{
-
-    fontSize:20,
-    marginHorizontal:20
+  icon: {
+    width: 35,
+    height: 35,
   },
-  icon:{
-
-    width:35,
-    height:35
-},
-image: {
-    flex:0.4,
-    width: "100%",
-    height: "100%",
+  image: {
+    flex: 0.4,
+    width: '100%',
+    height: '100%',
   },
   form: {
-    flex:0.6,
+    flex: 0.6,
     marginTop: 20,
     width: 300,
-  },
-  or:{
-    marginTop:10,
-    flexDirection:'row',
-    justifyContent:'center',
-    alignItems:'center'
   },
   unActiveTabButton: {
     width: '48%',
     height: '60%',
     justifyContent: 'center',
     alignItems: 'center',
-},
-activeTabButton: {
+  },
+  activeTabButton: {
     width: '48%',
     height: '60%',
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomWidth: 2,
     borderColor: colors.primary,
-},
+  },
   title: {
-    color:'white',
+    color: colors.primary,
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   input: {
-    padding:10,
+    padding: 10,
     borderColor: '#ccc',
     borderRadius: 5,
     marginBottom: 5,
-    fontSize : 20
+    fontSize: 20,
   },
   button: {
-    marginTop:20,
-    backgroundColor: 'gray',
+    marginTop: 30,
+    backgroundColor: colors.primary,
     padding: 10,
     borderRadius: 10,
-    alignSelf:'center',
-    width:100
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 150,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 24,
+    color: colors.item,
+    fontSize: 22,
+    fontWeight: '500',
   },
   forgotPasswordButton: {
-    marginTop: 10,
-    alignSelf:'center'
-
+    marginTop: 15,
+    marginBottom: 5,
+    alignSelf: 'center',
   },
   forgotPasswordText: {
-    color: 'white',
+    color: colors.primary,
+    fontSize: 15,
   },
 });

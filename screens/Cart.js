@@ -1,26 +1,25 @@
 import { Image, Text, TouchableOpacity, View, ScrollView, StyleSheet, Dimensions, TextInput } from "react-native"
-import React, { useState, useEffect,useCallback} from 'react';
-import { useRoute, useFocusEffect } from '@react-navigation/native';
-import { icons, images } from "../constants"
+import React, { useState, useEffect, useCallback } from 'react'
+import { useFocusEffect } from '@react-navigation/native'
+import { images } from "../constants"
 import { CartItem } from "../components"
-import { loadDataToCart } from "../getData";
-import { changeCart,check } from "../components/cart";
-import { pushCart } from "../pushCart";
-import { updateQuantity } from "../updateQuantity";
+import { loadDataToCart } from "../getData"
+import { changeCart} from "../components/cart"
+import { updateQuantity } from "../updateQuantity"
 
 const screenWidth = Dimensions.get('window').width
 
 const Cartt = ({ route }) => {
-    const [costTotal, setCostTotal] = useState(0);
-    const [coupon, setCoupon] = useState();
+    const [costTotal, setCostTotal] = useState(0)
+    const [coupon, setCoupon] = useState()
     const [feeShip, setFeeShip] = useState(20000)
-    const [showTotal, setShowTotal] = useState(false);
+    const [showTotal, setShowTotal] = useState(false)
     const [dataCart, setDataCart] = useState([])
 
     const toggleTotal = () => {
         updateQuantityFunction()
-        setShowTotal(!showTotal);
-    };
+        setShowTotal(!showTotal)
+    }
     
     const getData = async () => {
         const dt = await loadDataToCart(route.params.name)
@@ -29,20 +28,73 @@ const Cartt = ({ route }) => {
 
     useFocusEffect(
         useCallback(() => {
-            getData();
+            getData()
         }, [])
     )
 
     const calcuTotal=(a,b,c)=>{
         if (c == null)
-            return a+b
-        return a + b - ((a * c) / 100)
+            return a + b
+        else if(a == 0)
+            return 0
+        else
+            return a + b - ((a * c) / 100)
     }
 
     const updateQuantityFunction = () => {
         changeCart.forEach((item) => {
             updateQuantity(db, route.params.name, item, item.quantity, item.size)
         })
+    }
+
+    const toUpdate = async () => {
+        const cityRef = doc(db, 'Users', `${route.params.name}`)
+        await updateDoc(cityRef, {
+            cart: deleteField()
+        });
+        const data = {
+            cart : []
+        }
+        await setDoc(cityRef,data)
+        
+        navigation.navigate("account",{name:route.params.name})
+    }
+
+    useEffect(() => {
+        let totalCost = 0
+        processCartData(dataCart).forEach((item) => {
+            if (item.size == undefined) {
+                totalCost += item.price * item.quantity
+            } else {
+                if (item.quantity > 0) {
+                    totalCost += item.price * item.quantity
+                } else if (item.quantity > 0) {
+                    totalCost += item.price * item.quantity
+                }
+            }
+        })
+        setCostTotal(totalCost)
+    }, [dataCart])
+
+    const processCartData = (dataCart) => {
+        let processedCart = []
+        dataCart.forEach(item => {
+            if (item.size && Array.isArray(item.size)) {
+                item.size.forEach(sizeObj => {
+                    if (sizeObj.quantity > 0) {
+                        processedCart.push({
+                            ...item,
+                            size: sizeObj.sizeName,
+                            price: sizeObj.price,
+                            quantity: sizeObj.quantity
+                        })
+                    }
+                })
+            } else if (item.quantity && item.quantity > 0) {
+                processedCart.push(item)
+            }
+        })
+        return processedCart
     }
 
     const UiTotal = () => {
@@ -58,64 +110,18 @@ const Cartt = ({ route }) => {
                 </View>
                 <View style={styles.price}>
                     <Text style={styles.fontPrice}>Giảm giá</Text>
-                    <Text style={styles.coupontext}>- {coupon?coupon:0}%</Text>
+                    <Text style={styles.coupontext}>- {coupon ? coupon : 0}%</Text>
                 </View>
                 <View style={styles.boderBottom1}></View>
                 <View style={styles.price}>
                     <Text style={styles.totalprice}>Tổng thanh toán</Text>
                     <Text style={styles.totalprice}>{ calcuTotal(costTotal, feeShip, coupon).toLocaleString() }</Text>
                 </View>
-                <TouchableOpacity style={styles.buttonCheckout}>
+                <TouchableOpacity style={styles.buttonCheckout} onPress={(toUpdate)}>
                     <Text style={{ color: 'white', fontSize: 22, fontWeight: 'bold' }}>Đặt hàng</Text>
                 </TouchableOpacity>
             </View>
         )
-    }
-    
-    useEffect(() => {
-        let totalCost = 0;
-        processCartData(dataCart).forEach((item) => {
-            if (item.size == undefined) {
-                totalCost += item.price * item.quantity;
-            } else {
-                if (item.quantity > 0) {
-                    totalCost += item.price * item.quantity;
-                } else if (item.quantity > 0) {
-                    totalCost += item.price * item.quantity;
-                }
-            }
-        });
-        setCostTotal(totalCost);
-    }, [dataCart])
-
-    // console.log("------------")
-    // console.log(dataCart)
-    // console.log("------------")
-    
-    const processCartData = (dataCart) => {
-        // Tạo mảng mới để lưu trữ các mục đã xử lý
-        let processedCart = [];
-
-        // Duyệt qua từng mục trong dataCart
-        dataCart.forEach(item => {
-            if (item.size && Array.isArray(item.size)) {
-                // Nếu mục có thuộc tính size, xử lý từng size
-                item.size.forEach(sizeObj => {
-                    if (sizeObj.quantity > 0) {
-                        processedCart.push({
-                            ...item,
-                            size: sizeObj.sizeName,
-                            price: sizeObj.price,
-                            quantity: sizeObj.quantity
-                        });
-                    }
-                });
-            } else if (item.quantity && item.quantity > 0) {
-                // Nếu mục không có thuộc tính size, thêm trực tiếp vào mảng mới
-                processedCart.push(item);
-            }
-        });
-        return processedCart;
     }
 
     return (
@@ -127,7 +133,7 @@ const Cartt = ({ route }) => {
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     {dataCart && processCartData(dataCart).map((item, index) => (
                         <CartItem
-                            key={`${item.id}-${item.size || 'default'}-${index}`}  // Sử dụng key duy nhất kết hợp id, size và index
+                            key={`${item.id}-${item.size || 'default'}-${index}-${item.quantity}`}
                             name={item.name}
                             size={item.size}
                             imgUrl={item.imgUrl}
@@ -135,7 +141,7 @@ const Cartt = ({ route }) => {
                             quantity={item.quantity}
                             id={item.id}
                             item={item}
-                            userName ={route.params.name}
+                            userName={route.params.name}
                         />
                     ))}
                 </ScrollView>
@@ -148,20 +154,17 @@ const Cartt = ({ route }) => {
                         <TextInput placeholder="Nhập mã giảm giá" onChangeText={(coupon) => setCoupon(coupon < 100 && coupon)} value={coupon} style={styles.fontPrice}>
                         </TextInput>
                     </View>
-                    <TouchableOpacity style={styles.buttonSubmit} onPress={(toggleTotal)}>
+                    <TouchableOpacity style={styles.buttonSubmit} onPress={toggleTotal}>
                         <Text style={{ textAlign: 'center', color: 'white', fontSize: 15 }}>{showTotal ? "Hủy" : "Xác nhận"}</Text>
                     </TouchableOpacity>
-
                 </View>
             </View>
             <View style={styles.total}>
                 {showTotal && <UiTotal />}
             </View>
-            <View style={{ flex: showTotal ? 0.3 : 0 }}/>
-
+            <View style={{ flex: showTotal ? 0.3 : 0 }} />
         </View>
     )
-
 }
 
 const styles = StyleSheet.create({

@@ -30,12 +30,6 @@ const ItemCoffee_Other = (props) => {
 
     const addCart = async () => {
         const success = await pushCart(db, nameUser, item, quantity, sizeChoose);
-        console.log("Tới đây");
-        console.log(success);
-        if (success) {
-            console.log("Vào rồi");
-            navigation.navigate('Category', { refreshCart: true });
-        }
     };
 
     const pressItem = async () => {
@@ -89,12 +83,6 @@ const ItemFavourite = (props) => {
 
     const addCart = async () => {
         const success = await pushCart(db, nameUser, item, quantity, sizeChoose);
-        console.log("Tới đây");
-        console.log(success);
-        if (success) {
-            console.log("Vào rồi");
-            navigation.navigate('Category', { refreshCart: true });
-        }
     };
 
     const pressItem = async () => {

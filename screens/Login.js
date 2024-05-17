@@ -72,11 +72,11 @@ const App = ({navigation}) => {
         <View style={{flexDirection:'row',justifyContent:'space-between',height:"20%"}}>
             <TouchableOpacity  style={selectedTab === 'signin' ? styles.activeTabButton : styles.unActiveTabButton}
                 >
-                <Text style={styles.title}>Sign in</Text>
+                <Text style={styles.title}>Đăng nhập</Text>
             </TouchableOpacity>
             <TouchableOpacity style={selectedTab === 'signup' ? styles.activeTabButton : styles.unActiveTabButton} 
             onPress={(handleRegister)}>
-                <Text style={styles.title}>Sign up</Text>
+                <Text style={styles.title}>Đăng ký</Text>
             </TouchableOpacity>
         </View>
         <View style ={styles.inputContainer}> 
@@ -99,23 +99,19 @@ const App = ({navigation}) => {
         </View>
 
         <TouchableOpacity style={styles.button} onPress={loginfire}>
-          <Text style={styles.buttonText}>Sign in</Text>
+          <Text style={styles.buttonText}>Đăng nhập</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.forgotPasswordButton}>
-          <Text style={styles.forgotPasswordText}>Forgot password</Text>
+          <Text style={styles.forgotPasswordText}>Quên mật khẩu</Text>
         </TouchableOpacity>
         <View style={styles.or}>
-            <View style={{borderBottomWidth:2,width:125}}>
-
-            </View>
-            <Text style={styles.fontOr}>or</Text>
-            <View style={{borderBottomWidth:2,width:125}}>
-                
-            </View>
+            <View style={{borderBottomWidth:2,width:115}}/>
+            <Text style={styles.fontOr}>hoặc</Text>
+            <View style={{borderBottomWidth:2,width:115}}/>
         </View>
         <TouchableOpacity style={styles.forgotPasswordButton} onPress={(onGoogleButtonPress)}>
-            <Image source={icons.gg} style={{height:50,width:100}} resizeMode='contain'/>
+            <Image source={icons.gg} style={{height: 40, width: 40}} resizeMode='contain'/>
         </TouchableOpacity>
       </View>
     </View>
@@ -126,7 +122,7 @@ const App = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#8B4513",
+    backgroundColor: colors.item,
     alignItems: 'center',
   },
   inputContainer:{
@@ -137,9 +133,8 @@ const styles = StyleSheet.create({
     marginBottom:10,
   },
   fontOr:{
-
-    fontSize:20,
-    marginHorizontal:20
+    fontSize: 18,
+    marginHorizontal: 15
   },
   icon:{
 
@@ -178,9 +173,9 @@ activeTabButton: {
     borderColor: colors.primary,
 },
   title: {
-    color:'white',
+    color: colors.primary,
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   input: {
     padding:10,
@@ -191,23 +186,28 @@ activeTabButton: {
   },
   button: {
     marginTop:20,
-    backgroundColor: 'gray',
+    backgroundColor: colors.primary,
     padding: 10,
     borderRadius: 10,
     alignSelf:'center',
-    width:100
+    justifyContent: 'center',
+    alignItems: 'center',
+    width:150
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 24,
+    color: colors.item,
+    fontSize: 22,
+    fontWeight: '500'
   },
   forgotPasswordButton: {
-    marginTop: 10,
+    marginTop: 15,
+    marginBottom: 5,
     alignSelf:'center'
 
   },
   forgotPasswordText: {
-    color: 'white',
+    color: colors.primary,
+    fontSize: 15
   },
 });
 
