@@ -1,6 +1,7 @@
-import { Image, Text, TouchableOpacity, View, ScrollView, StyleSheet, Dimensions, TextInput } from "react-native"
+import { Image, Text, TouchableOpacity, View, ScrollView, StyleSheet, Dimensions, TextInput, Alert } from "react-native"
 import React, { useState, useEffect,useCallback} from 'react';
 import { useRoute, useFocusEffect } from '@react-navigation/native';
+import { setDoc, where,query,doc, collection, getDoc, getDocs,updateDoc,deleteField } from 'firebase/firestore';
 
 import { icons, images } from "../constants"
 import { CartItem } from "../components"
@@ -12,7 +13,7 @@ import { navi,getnavi } from "../const";
 
 const screenWidth = Dimensions.get('window').width
 
-const Cartt = ({ route }) => {
+const Cartt = ({ route,navigation }) => {
     const [costTotal, setCostTotal] = useState(0);
     const [coupon, setCoupon] = useState();
     const [feeShip, setFeeShip] = useState(20000);
@@ -34,7 +35,10 @@ const Cartt = ({ route }) => {
     const calcuTotal=(a,b,c)=>{
         if (c==null)
             return a+b
-        return a+b-((a*c)/100)
+        else if(a==0)
+            return 0
+        else
+            return a+b-((a*c)/100)
     }
     // const uniqueItems = Object.values(changeCart.reduce((acc, item) => {
     //     // Check if the item id is already in the accumulator
@@ -69,7 +73,18 @@ const Cartt = ({ route }) => {
             })
         }
 
-    
+    const toUpdate=async ()=>{
+        const cityRef = doc(db, 'Users', `${route.params.name}`);
+        await updateDoc(cityRef, {
+            cart: deleteField()
+        });
+        const data ={
+            cart : []
+        }
+        await setDoc(cityRef,data)
+        
+        navigation.navigate("account",{name:route.params.name})
+    }
     const UiTotal = () => {
         return (
             <View>
@@ -79,7 +94,7 @@ const Cartt = ({ route }) => {
                 </View>
                 <View style={styles.price}>
                     <Text style={styles.fontPrice}>Fee Ship</Text>
-                    <Text style={styles.fontPrice}>{feeShip}</Text>
+                    <Text style={styles.fontPrice}>{costTotal!=0?feeShip:0}</Text>
                 </View>
                 <View style={styles.price}>
                     <Text style={styles.fontPrice}>Coupon</Text>
@@ -88,9 +103,9 @@ const Cartt = ({ route }) => {
                 <View style={styles.boderBottom1}></View>
                 <View style={styles.price}>
                     <Text style={styles.totalprice}>Total</Text>
-                    <Text style={styles.totalprice}>{calcuTotal(costTotal,feeShip,coupon)}</Text>
+                    <Text style={styles.totalprice}>{costTotal!=0?calcuTotal(costTotal,feeShip,coupon):0}</Text>
                 </View>
-                <TouchableOpacity style={styles.buttonCheckout}>
+                <TouchableOpacity style={styles.buttonCheckout} onPress={(toUpdate)}>
                     <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold' }}>Checkout</Text>
                 </TouchableOpacity>
             </View>

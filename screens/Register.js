@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { colors, icons, images } from "../constants"
 import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity,Alert } from 'react-native';
 import auth from '@react-native-firebase/auth'
+import { setDoc,doc, collection } from "firebase/firestore";
 export default function Register({ navigation, route }) {
   const [selectedTab,setSelectedTab] = useState('signup');
   const [email, setEmail] = useState('');
@@ -10,14 +11,22 @@ export default function Register({ navigation, route }) {
   const changeTab = (tab) => {
     setSelectedTab(tab);}
   const login_page =()=>{
-    navigation.navigate("Login")
+    navigation.navigate("Login",email.split("@")[0])
 
   }
   const register_firebase = () => {
     if(password==Confirm)
       {
     auth().createUserWithEmailAndPassword(email,password)
-      .then(() => {
+      .then(async () => {
+        const user = doc(db,"User",`${email.split("@")[0]}`)
+        const account = {
+          email : email,
+          phone : null,
+          address : null
+        }
+        await setDoc(user,account)
+        console.log("Add user succesfull")
         Alert.alert('Alert Title', `Đăng ký thành công ${email}`, [
           {
             text: 'Cancel',

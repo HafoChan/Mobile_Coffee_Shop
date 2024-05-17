@@ -42,7 +42,7 @@ const TabNavigator = ({route}) => {
                     return <Image source={focused?icons.heart:icons.love} style={styles.icon28} tintColor={focused?colors.primary:colors.black}/>
                 }
             }}></Tab.Screen>
-            <Tab.Screen name='User' component={User} options={{
+            <Tab.Screen name='User' component={User} initialParams={{name:route.params.name}} options={{
                 tabBarIcon: ({focused, color, size}) => {     
                     return <Image source={icons.user} style={styles.icon28} tintColor={focused?colors.primary:colors.black}/>
                 }
