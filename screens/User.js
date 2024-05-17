@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { colors, icons } from '../constants';
+import { setDoc, where,query,doc, collection, getDoc, getDocs } from 'firebase/firestore';
+import { useRoute } from '@react-navigation/native';
 
 const User = () => {
+  const route = useRoute();
+  console.log(route)
+
   const [name, setName] = useState('SoHan');
   const [phone, setPhone] = useState('234234523');
   const [address, setAddress] = useState('số 1 VVN, Linh Chiểu, Thủ Đức');
@@ -39,6 +44,29 @@ const User = () => {
   const Line = () => {
     return <View style={styles.line} />
   }
+  useEffect(()=>{
+    const getUser =async ()=>{
+      const user = doc(db,"User",`${route.params.name}`)
+      const docSnap = await getDocs(user);
+      console.log(docSnap.data())
+  
+     
+    }
+    getUser()
+  },[name,address,phone])
+  
+    const change=async ()=>{
+      const user = doc(db,"User",`${route.params.name}`)
+      const data ={
+        name : name,
+        phone : phone,
+        address : address
+      }
+      await setDoc(user,data)
+    }
+    change()
+
+  
 
   return (
     <View style={styles.container}>
@@ -58,7 +86,7 @@ const User = () => {
           </View>
 
           <View style={styles.sectionContent}>
-            <TouchableOpacity style={styles.sectionRow} onPress={() => { setIsEditingName(true); setInitialName(name); }}>
+            <TouchableOpacity style={styles.sectionRow} onPress={() => { setIsEditingName(true); setInitialName(name); change() }}>
               {isEditingName ? (
                 <TextInput
                   style={styles.textInput}
@@ -73,7 +101,7 @@ const User = () => {
               <Image source={icons.edit} style={styles.editIcon}/>
             </TouchableOpacity>
             <Line/>
-            <TouchableOpacity style={styles.sectionRow} onPress={() => { setIsEditingPhone(true); setInitialPhone(phone); }}>
+            <TouchableOpacity style={styles.sectionRow} onPress={() => { setIsEditingPhone(true); setInitialPhone(phone); change()}}>
               {isEditingPhone ? (
                 <TextInput
                   style={styles.textInput}
@@ -89,7 +117,7 @@ const User = () => {
               <Image source={icons.edit} style={styles.editIcon}/>
             </TouchableOpacity>
             <Line/>
-            <TouchableOpacity style={styles.sectionRow} onPress={() => { setIsEditingAddress(true); setInitialAddress(address); }}>
+            <TouchableOpacity style={styles.sectionRow} onPress={() => { setIsEditingAddress(true); setInitialAddress(address);change() }}>
               {isEditingAddress ? (
                 <TextInput
                   style={[styles.textInput, styles.sectionAddressInput]}

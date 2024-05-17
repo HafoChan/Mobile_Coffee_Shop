@@ -7,7 +7,7 @@ import Register from './screens/Register'
 
 import TabNavigator from './navigators/TabNavigator';
 import Detail from './screens/Detail';
-
+import Account  from './screens/detailAccount';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +21,7 @@ const App = () => {
         />
         <Stack.Screen name='TabNavigator' component={TabNavigator}  options={{animation: 'slide_from_bottom'}}/>
         <Stack.Screen name='Detail' component={Detail}  options={{animation: 'slide_from_bottom'}}/>
+        <Stack.Screen name = "account" component={Account} options={{animation: 'slide_from_bottom'}}/>
         
       <Stack.Screen name="Register" component={Register} />
     </Stack.Navigator>

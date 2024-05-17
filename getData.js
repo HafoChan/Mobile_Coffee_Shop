@@ -1,8 +1,8 @@
 import { collection, query, where, getDocs, doc} from "firebase/firestore";
 import db from './firebaseSetting';
 
-async function loadDataToCart() {
-    const q = query(collection(db, "Users"),where("name", "==", "a3"));
+async function loadDataToCart(name) {
+    const q = query(collection(db, "Users"),where("name", "==", name));
     try {
         const docSnap = await getDocs(q);
         const docs = [];
