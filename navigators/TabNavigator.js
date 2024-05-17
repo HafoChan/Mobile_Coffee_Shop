@@ -37,7 +37,7 @@ const TabNavigator = ({route}) => {
                     return <Image source={icons.basket} style={styles.basket} tintColor={focused?colors.primary:colors.black} resizeMode='stretch'/>
                 }
             }}></Tab.Screen>
-            <Tab.Screen name='Favourite' component={Favourite} options={{
+            <Tab.Screen name='Favourite' component={Favourite} initialParams={{name:route.params.name}} options={{
                 tabBarIcon: ({focused, color, size}) => {     
                     return <Image source={focused?icons.heart:icons.love} style={styles.icon28} tintColor={focused?colors.primary:colors.black}/>
                 }

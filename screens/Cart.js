@@ -1,5 +1,7 @@
 import { Image, Text, TouchableOpacity, View, ScrollView, StyleSheet, Dimensions, TextInput } from "react-native"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useCallback} from 'react';
+import { useRoute, useFocusEffect } from '@react-navigation/native';
+
 import { icons, images } from "../constants"
 import { CartItem } from "../components"
 import { loadDataToCart } from "../getData";
@@ -20,13 +22,15 @@ const Cartt = ({ route }) => {
         setShowTotal(!showTotal);
     };
     const [dataCart, setDataCart] = useState([])
-    useEffect(() => {
         const getData = async () => {
             const dt = await loadDataToCart(route.params.name)
             setDataCart(dt)
         }
-        getData()
-    }, [dataCart])
+        useFocusEffect(
+            useCallback(() => {
+                getData();
+            }, [])
+        );
     const calcuTotal=(a,b,c)=>{
         if (c==null)
             return a+b

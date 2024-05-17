@@ -75,7 +75,9 @@ export const pushCart = async (db, nameUser, item, quantity, size) => {
             await setDoc(load, dt);
             console.log("Document successfully updated!");
         }
+        return true;
     } catch (error) {
         console.error("Error getting user document:", error);
+        return false;
     }
 };

@@ -22,6 +22,8 @@ export default {
     logout: require('../assets/log-out.png'),
     orderHistory: require('../assets/order-history.png'),
     edit: require('../assets/edit.png'),
+    favourite_active: require('../assets/favourite-active.png'),
+    favourite_unactive: require('../assets/favourite-unactive.png'),
 
 
     drink: require('../assets/drink.png'),
