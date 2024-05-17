@@ -4,8 +4,9 @@ import db from '../firebaseSetting';
 import { useState, useEffect } from "react";
 import { ExpandableText } from "../components";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { fetchData } from '../getData';
+import { fetchData, itemFavourite } from '../getData';
 import { pushCart } from "../pushCart";
+import { pushFavourite } from "../pushFavourite";
 
 const Detail = () => {
 
@@ -19,12 +20,12 @@ const Detail = () => {
 
     useEffect(() => {
         const getData = async () => {
-            const categoryData = await fetchData(route.params?.category, route.params?.id);
-            setData(categoryData);
+            const favoriteData = await itemFavourite(route.params.nameUser, route.params.item)
+            setFavourite(favoriteData)
             setLoading(false);
         };
-        getData();
-    }, [route.params?.category, route.params?.id]);
+        getData(favourite);
+    }, []);
 
     const pressSize = (size) => {
         setSizeChoose(size);
@@ -39,7 +40,9 @@ const Detail = () => {
 
     const pressFavourite = () => {
         setFavourite(!favourite);
+        pushFavourite(db, route.params.nameUser, route.params.item)
     };
+    
 
     const back = () => {
         navigate.goBack();
@@ -49,13 +52,13 @@ const Detail = () => {
         return <Text>Đang tải...</Text>;
     }
 
-    const { description, imgUrl, name, size } = data;
+    const { description, imgUrl, name, size } = route.params.item;
 
     let sizeMediumPrice = null;
     let sizeLargePrice = null;
     let checkSize = false;
 
-    if (size !== undefined) {
+    if (size != undefined) {
         sizeMediumPrice = size[0].price;
         sizeLargePrice = size[1].price;
         checkSize = true;
@@ -84,7 +87,7 @@ const Detail = () => {
 
                         <View style={styles.priceContainer}>
                             {checkSize && <Text style={styles.priceText}>{sizeChoose == "M" ? sizeMediumPrice.toLocaleString() : sizeLargePrice.toLocaleString()}<Text> VNĐ</Text></Text>}
-                            {!checkSize && <Text style={styles.priceText}>{data.price.toLocaleString()}<Text> VNĐ</Text></Text>}
+                            {!checkSize && <Text style={styles.priceText}>{route.params.item.price.toLocaleString()}<Text> VNĐ</Text></Text>}
                         </View>
                         
                         <Text style={styles.sectionTitle}>Mô tả</Text>

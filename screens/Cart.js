@@ -5,28 +5,28 @@ import { CartItem } from "../components"
 import { loadDataToCart } from "../getData";
 const screenWidth = Dimensions.get('window').width
 
-// let checkLoad = getIsLoaded();
-let a = 1
-const Cartt = ({route}) => {
-    console.log("Ab")
-    console.log(route.params.name)
+const Cartt = ({route, navigation}) => {
+    console.log(route.params);
+    console.log(route.params?.refreshCart);
     const [showTotal, setShowTotal] = useState(false);
+    const [dataCart, setDataCart] = useState();
 
     const toggleTotal = () => {
         setShowTotal(!showTotal);
     };
-    const [dataCart, setDataCart] = useState([])
-    useEffect(()=>{
+
+    useEffect(() => {
         const getData = async () => {
-            const dt = await loadDataToCart()
-            setDataCart(dt)
+            const dt = await loadDataToCart();
+            setDataCart(dt);
+        };
+        if (route.params?.refreshCart) {
+            getData();
+            console.log("Load lại data nè");
         }
-        getData()
-    },[showTotal])
-   
+    }, [route.params?.refreshCart]); 
     
     const UiTotal = () => {
-        console.log('in')
         return (
             <View>
                 <View style={styles.price}>
@@ -52,9 +52,8 @@ const Cartt = ({route}) => {
             </View>
         )
     }
-    console.log("tttttttttttt")
-    console.log(dataCart)
-    console.log("tttttttttttt")
+
+    console.log("Chưa load lại data nhe")
     const showPrice = (item) => {
         const {size} = item
         if (size != undefined)

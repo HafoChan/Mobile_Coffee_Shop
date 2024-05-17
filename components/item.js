@@ -4,12 +4,140 @@ import db from '../firebaseSetting';
 import { fetchData } from "../getData";
 import { useNavigation } from "@react-navigation/native";
 import { pushCart } from '../pushCart';
+import React, { useState, useEffect } from 'react';
+import { pushFavourite } from "../pushFavourite";
+
 export {
-    ItemCoffee_Other,
+    ItemCoffee_Other, ItemBlendedIce_Yogurt, ItemFavourite
 }
 const heightItem = 240
 
 const ItemCoffee_Other = (props) => {
+    const { nameUser, item } = props;
+    const { name, imgUrl, id, description, size } = item
+    const [price, setPrice] = useState(null);
+    const navigation = useNavigation();
+    const sizeChoose = "M";
+    const quantity = 1;
+
+    useEffect(() => {
+        if (size == undefined) {
+            setPrice(item.price);
+        } else {
+            setPrice(size[0].price);
+        }
+    }, [item, size]);
+
+    const addCart = async () => {
+        const success = await pushCart(db, nameUser, item, quantity, sizeChoose);
+        console.log("Tới đây");
+        console.log(success);
+        if (success) {
+            console.log("Vào rồi");
+            navigation.navigate('Category', { refreshCart: true });
+        }
+    };
+
+    const pressItem = async () => {
+        navigation.navigate('Detail', { item: item, nameUser });
+    };
+
+    return (
+        <TouchableOpacity style={stylesOtherItem.itemContainer} onPress={() => pressItem()}>
+            <View style={stylesOtherItem.imageContainer}>
+                <Image src={imgUrl} style={stylesOtherItem.image} />
+            </View>
+            <View style={stylesOtherItem.itemDetailContainer}>
+                <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>{name}</Text>
+                <View style={stylesOtherItem.favoriteAndPriceContainer}>
+                    <View>
+                        <View style={stylesOtherItem.favoriteContainer}>
+                            <Text style={styles.favoriteText}>200k</Text>
+                            <Image source={icons.heart} style={[styles.favoriteIcon, { marginLeft: 5 }]} />
+                        </View>
+                        {price !== null ? (
+                            <Text style={styles.itemPrice}>{price.toLocaleString()}<Text> VNĐ</Text></Text>
+                        ) : (
+                            <Text style={styles.itemPrice}>Đang cập nhật...</Text>
+                        )}
+                    </View>
+                    <TouchableOpacity onPress={addCart}>
+                        <Image source={icons.addToCart} tintColor={colors.black} style={[styles.addIcon]} />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </TouchableOpacity>
+    );
+};
+
+const ItemFavourite = (props) => {
+    const { nameUser, item } = props;
+    const { name, imgUrl, id, description, size } = item
+    const [favorite, setFavourite] = useState(true)
+    const [price, setPrice] = useState(null);
+    const navigation = useNavigation();
+    const sizeChoose = "M";
+    const quantity = 1;
+
+    useEffect(() => {
+        if (size === undefined) {
+            setPrice(item.price);
+        } else {
+            setPrice(size[0].price);
+        }
+    }, [item, size]);
+
+    const addCart = async () => {
+        const success = await pushCart(db, nameUser, item, quantity, sizeChoose);
+        console.log("Tới đây");
+        console.log(success);
+        if (success) {
+            console.log("Vào rồi");
+            navigation.navigate('Category', { refreshCart: true });
+        }
+    };
+
+    const pressItem = async () => {
+        navigation.navigate('Detail', { item: item, nameUser });
+    };
+
+    const pressFavourite = () => {
+        pushFavourite(db, nameUser, item)
+        setFavourite(!favorite)
+    }
+
+    return (
+        <TouchableOpacity style={stylesOtherItem.itemContainer} onPress={() => pressItem()}>   
+            <View style={[stylesOtherItem.imageContainer, {flexDirection: 'row'}]}>
+                <TouchableOpacity style={styles.favoriteButton} onPress={() => pressFavourite()}>
+                    <Image source={favorite ? icons.favourite_active : icons.favourite_unactive} tintColor={colors.primary} style={styles.favouriteIcon}/>
+                </TouchableOpacity>
+                <Image src={imgUrl} style={[stylesOtherItem.image, {width: '80%', height: '80%'}]} />
+            </View>
+            <View style={stylesOtherItem.itemDetailContainer}>
+                <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>{name}</Text>
+                <View style={stylesOtherItem.favoriteAndPriceContainer}>
+                    <View>
+                        <View style={stylesOtherItem.favoriteContainer}>
+                            <Text style={styles.favoriteText}>200k</Text>
+                            <Image source={icons.heart} style={[styles.favoriteIcon, { marginLeft: 5 }]} />
+                        </View>
+                        {price !== null ? (
+                            <Text style={styles.itemPrice}>{price.toLocaleString()}<Text> VNĐ</Text></Text>
+                        ) : (
+                            <Text style={styles.itemPrice}>Đang cập nhật...</Text>
+                        )}
+                    </View>
+                    <TouchableOpacity onPress={addCart}>
+                        <Image source={icons.addToCart} tintColor={colors.black} style={[styles.addIcon]} />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </TouchableOpacity>
+    );
+}
+
+const ItemBlendedIce_Yogurt = (props) => {
     const { name, imgUrl, price, category, nameUser, id } = props;
     const navigation = useNavigation();
     const size = "M"
@@ -17,7 +145,13 @@ const ItemCoffee_Other = (props) => {
 
     const addCart = async () => {
         const cart = await fetchData(category, id);
-        pushCart(db, nameUser, cart, quantity, size);
+        const success = await pushCart(db, nameUser, cart, quantity, size);
+        console.log("Tới đây")
+        console.log(success)
+        if (success) {
+            console.log("Vào rồi")
+            navigation.navigate('Category', { refreshCart: true });
+        }
     };
 
     const pressItem = async (category, id) => {
@@ -26,44 +160,20 @@ const ItemCoffee_Other = (props) => {
             navigation.navigate('Detail', { category, id, item: cart, nameUser });
         }
     };
-
-    return <TouchableOpacity style={stylesOtherItem.itemContainer} onPress={() => pressItem(category, id)}>
-        <View style={stylesOtherItem.imageContainer}>
-            <Image src={imgUrl} style={stylesOtherItem.image} />
-        </View>
-        <View style={stylesOtherItem.itemDetailContainer}>
-            <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>{name}</Text>
-            <View style={stylesOtherItem.favoriteAndPriceContainer}>
-                <View>
-                    <View style={stylesOtherItem.favoriteContainer}>
-                        <Text style={styles.favoriteText}>200k</Text>
-                        <Image source={icons.heart} style={[styles.favoriteIcon, { marginLeft: 5 }]} />
-                    </View>
-                    <Text style={styles.itemPrice}>{price.toLocaleString()}<Text> VNĐ</Text></Text>
-                </View>
-                <TouchableOpacity onPress={addCart}>
-                    <Image source={icons.addToCart} tintColor={colors.black} style={[styles.addIcon]} />
-                </TouchableOpacity>
-            </View>
-        </View>
-    </TouchableOpacity>
-}
-
-const ItemBlendedIce_Yogurt = (props) => {
-    return <TouchableOpacity style={stylesBlendedIce.item}>
+    return <TouchableOpacity style={stylesBlendedIce.item} onPress={() => pressItem(category, id)}>
         <View style={stylesBlendedIce.itemBackground}></View>
         <View style={stylesBlendedIce.itemContent}>
             <View style={stylesBlendedIce.favorite}>
-                <Image source={icons.heart} style={styles.favoriteIcon}/>
-                <Text style={styles.favoriteText}>400k</Text>
+                <Image source={icons.heart} style={styles.favoriteIcon} tintColor={colors.primary}/>
+                {/* <Text style={styles.favoriteText}>400k</Text> */}
             </View>
-            <Image source={images.item1} style={stylesBlendedIce.itemImage}/>
+            <Image src={imgUrl} style={stylesBlendedIce.itemImage} resizeMode="cover"/>
         </View>
         <View style={stylesBlendedIce.itemDetails}>
-            <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>Trà xanh</Text>
+            <Text style={styles.itemName} numberOfLines={1} ellipsize='tail'>{name}</Text>
             <View style={stylesBlendedIce.addContainer}>
-                <Text style={styles.itemPrice}>$10</Text>
-                <TouchableOpacity>
+                <Text style={styles.itemPrice}>{price.toLocaleString()}<Text> VNĐ</Text></Text>
+                <TouchableOpacity onPress={addCart}>
                     <Image source={icons.addToCart} tintColor={colors.black} style={styles.addIcon}/>
                 </TouchableOpacity>
             </View>
@@ -134,20 +244,21 @@ const stylesBlendedIce = StyleSheet.create({
         flexDirection: 'row',
         width: '100%',
         height: '72%',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
+        alignItems: 'center',
         paddingHorizontal: 5,
     },
     favorite: {
         flexDirection: 'row',
-        width: '35%',
+        width: '25%',
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
         paddingStart: 8,
     },
     itemImage: {
-        width: '60%',
-        height: '110%',
+        width: '75%',
+        height: '90%',
     },
     itemDetails: {
         marginHorizontal: 14,
@@ -173,8 +284,8 @@ const styles = StyleSheet.create({
         color: colors.primary,
     },
     favoriteIcon: {
-        height: 18,
-        width: 18,
+        height: 24,
+        width: 24,
         marginRight: 5,
     },
     favoriteText: {
@@ -185,5 +296,16 @@ const styles = StyleSheet.create({
     addIcon: {
         width: 30,
         height: 30
+    },
+    favouriteIcon: {
+        width: 24,
+        height: 24,
+        marginTop: 12,
+        marginLeft: 8
+    },
+    favoriteButton: {
+        alignSelf: 'flex-start',
+        width: 24,
+        height: 24,
     }
 })

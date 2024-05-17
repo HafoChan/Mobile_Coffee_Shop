@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Image, Text, TouchableOpacity, View, ScrollView, FlatList } from "react-native"
 import { icons, colors } from "../constants"
-import {ItemBlendedIce_Yogurt, ItemCoffee_Other} from "../components"
+import { ItemCoffee_Other } from "../components"
 import { useRoute } from '@react-navigation/native';
-import { fetchData, getDataToCart } from '../getData';
+import { fetchData } from '../getData';
 
 
 const Category = () => {
@@ -183,7 +183,7 @@ const Category = () => {
                     <Text>Đang tải...</Text>
                 )}
                 {data != null && data.map(item => {
-                    return(<ItemCoffee_Other key={item.id} name={item.name} nameUser={route.params.name} imgUrl={item.imgUrl} price={showPrice(item)} category={qCategory} id={item.id}/>)
+                    return(<ItemCoffee_Other key={item.id} nameUser={route.params.name} item={item}/>)
                 })}
             </View>
         </ScrollView>

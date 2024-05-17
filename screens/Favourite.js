@@ -1,41 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Image, Text, TouchableOpacity, View, ScrollView, FlatList } from "react-native"
-import { icons, colors } from "../constants"
-import {ItemBlendedIce_Yogurt, ItemCoffee_Other} from "../components"
-import { useRoute } from '@react-navigation/native';
-import { fetchData } from '../getData';
+import React, { useState, useEffect, useCallback } from 'react';
+import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { colors } from "../constants";
+import { ItemFavourite } from "../components";
+import { useRoute, useFocusEffect } from '@react-navigation/native';
+import { itemFavourite } from '../getData';
 
 const Favourite = () => {
+    const route = useRoute();
+    const [data, setData] = useState(null);
 
-  const [data, setData] = useState(null);
+    const getData = async () => {
+        const itemData = await itemFavourite(route.params.name, null);
+        setData(itemData);
+    };
 
-  useEffect(() => {
-      fetchData().then(fetchedData => {
-          setData(fetchedData);
-      }).catch(error => {
-          console.error('Failed to fetch data:', error);
-      });
-  }, []);
+    useFocusEffect(
+        useCallback(() => {
+            getData();
+        }, [])
+    );
 
-  // Trước khi bóc tách, kiểm tra nếu dữ liệu có sẵn
-  if (!data) {
-      return <Text>Loading...</Text>; // Hoặc bất kỳ chỉ báo trạng thái tải nào khác
-  }
+    return (
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <Text style={styles.titleHeader}>Danh mục yêu thích</Text>
+            </View>
 
-  const { description, id, imgUrl, name, size } = data;
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+                <View style={styles.itemContainer}>
+                    {!data && (
+                        <Text>Đang tải...</Text>
+                    )}
+                    {data !== null && data.map(item => {
+                        return (<ItemFavourite key={item.name} nameUser={route.params.name} item={item} />);
+                    })}
+                </View>
+            </ScrollView>
+        </View>
+    );
+};
 
-  const [mediumSize, largeSize] = size
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: colors.white
+    },
+    header: {
+        height: '8%',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    titleHeader: {
+        fontSize: 22,
+        fontWeight: '700',
+        color: 'black',
+        marginTop: 5,
+        marginBottom: 15
+    },
+    scrollView: {
+        marginBottom: 15,
+        paddingHorizontal: 15,
+        marginBottom: 70
+    },
+    itemContainer: {
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+        flexDirection: 'row',
+    },
+});
 
-  console.log(data)
-
-  return (
-    <View>
-      <Text>Favourite</Text>
-      <ItemCoffee_Other name={name} imgUrl={imgUrl} price={mediumSize.price}/>
-    </View>
-  )
-}
-
-export default Favourite
-
-const styles = StyleSheet.create({})
+export default Favourite;
