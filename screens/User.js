@@ -44,16 +44,16 @@ const User = () => {
   const Line = () => {
     return <View style={styles.line} />
   }
-  useEffect(()=>{
-    const getUser =async ()=>{
-      const user = doc(db,"User",`${route.params.name}`)
-      const docSnap = await getDocs(user);
-      console.log(docSnap.data())
+  // useEffect(()=>{
+  //   const getUser =async ()=>{
+  //     const user = doc(db,"User",`${route.params.name}`)
+  //     const docSnap = await getDocs(user);
+  //     console.log(docSnap.data())
   
      
-    }
-    getUser()
-  },[name,address,phone])
+  //   }
+  //   getUser()
+  // },[name,address,phone]) đang làm xử lý lấy dữ liệu về
   
     const change=async ()=>{
       const user = doc(db,"User",`${route.params.name}`)
