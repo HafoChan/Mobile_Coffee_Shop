@@ -1,16 +1,16 @@
 import { setDoc, doc } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
-import { colors, icons, images } from "../constants";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from "@react-navigation/native";
-
+import { colors } from "../constants";  // Make sure you have a colors file for consistent styling
+import CustomAlert from '../CustomAlert';
 export default function Account({ route }) {
   const [addressInput, setAddress] = useState('');
   const [phoneInput, setPhone] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
   const navigate = useNavigation();
 
   const handleUpdate = async () => {
-    Alert.alert('Đơn hàng đã được xử lý gửi tới!', `Address: ${addressInput}`);
     const user = doc(db, "User", `${route.params.name}`);
     const data = {
       name: route.params.name,
@@ -18,22 +18,21 @@ export default function Account({ route }) {
       phone: phoneInput
     };
     await setDoc(user, data);
-    navigate.goBack();
+    setModalVisible(true);  // Show the custom modal
     console.log("update shipping success");
   };
 
-  const back = () => {
-    navigate.goBack();
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    navigate.goBack();  // Navigate back after closing the modal
   };
 
   return (
     <View style={styles.container}>
-      <Image source={images.banner1} style={styles.logo} />
       <Text style={styles.title}>Cập nhật thông tin người dùng</Text>
       <TextInput
         style={styles.input}
         placeholder="Địa chỉ"
-        
         value={addressInput}
         onChangeText={setAddress}
       />
@@ -47,6 +46,11 @@ export default function Account({ route }) {
       <TouchableOpacity style={styles.button} onPress={handleUpdate}>
         <Text style={styles.buttonText}>Mua Hàng</Text>
       </TouchableOpacity>
+      <CustomAlert
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        message={`Đơn hàng đã được xử lý gửi tới! Address: ${addressInput}`}
+      />
     </View>
   );
 }
@@ -57,13 +61,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
     backgroundColor: colors.white,
-  },
-  logo: {
-    width: 350,
-    height: 200,
-    alignSelf: 'center',
-    marginBottom: 30,
-    borderRadius:15
   },
   title: {
     fontSize: 24,
@@ -79,7 +76,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
     backgroundColor: colors.lightGray,
-    fontSize : 17
   },
   button: {
     backgroundColor: colors.primary,
@@ -92,15 +88,5 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  backButton: {
-    backgroundColor: colors.secondary,
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  backButtonText: {
-    color: colors.white,
-    fontSize: 18,
   },
 });

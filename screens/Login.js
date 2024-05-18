@@ -1,5 +1,5 @@
 import React, { useState ,useEffect} from 'react';
-import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { colors, icons, images } from "../constants"
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
@@ -63,7 +63,16 @@ const App = ({navigation}) => {
         }
     }
 
-
+    const forgot = () => {
+      auth().sendPasswordResetEmail( email)
+        .then(() => {
+          Alert.alert("Password reset email sent!");
+        })
+        .catch((error) => {
+          console.error(error);
+          Alert.alert("Error", error.message);
+        });
+    };
   return (
     <View style={styles.container}>
       <Image source={images.background} style={styles.image} />
@@ -102,7 +111,7 @@ const App = ({navigation}) => {
           <Text style={styles.buttonText}>Đăng nhập</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.forgotPasswordButton}>
+        <TouchableOpacity style={styles.forgotPasswordButton} onPress={(forgot)}>
           <Text style={styles.forgotPasswordText}>Quên mật khẩu</Text>
         </TouchableOpacity>
         <View style={styles.or}>
