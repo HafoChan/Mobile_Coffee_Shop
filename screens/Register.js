@@ -21,7 +21,7 @@ export default function Register({ navigation, route }) {
       .then(async () => {
         const user = doc(db,"User",`${email.split("@")[0]}`)
         const account = {
-          email : email,
+          name : email,
           phone : null,
           address : null
         }

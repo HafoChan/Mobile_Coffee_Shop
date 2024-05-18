@@ -6,10 +6,11 @@ import { CartItem } from "../components"
 import { loadDataToCart } from "../getData"
 import { changeCart} from "../components/cart"
 import { updateQuantity } from "../updateQuantity"
+import { setDoc, where,query,doc, collection, getDoc, getDocs,updateDoc,deleteField } from 'firebase/firestore';
 
 const screenWidth = Dimensions.get('window').width
 
-const Cartt = ({ route }) => {
+const Cartt = ({ route,navigation }) => {
     const [costTotal, setCostTotal] = useState(0)
     const [coupon, setCoupon] = useState()
     const [feeShip, setFeeShip] = useState(20000)
@@ -17,11 +18,17 @@ const Cartt = ({ route }) => {
     const [dataCart, setDataCart] = useState([])
 
     const toggleTotal = () => {
-        updateQuantityFunction()
+        // updateQuantityFunction()
+        console.log("tien hanh tinh toan")
+        getData()
         setShowTotal(!showTotal)
     }
+    useEffect(()=>{
+        total()
+    },[dataCart])
     
     const getData = async () => {
+        console.log("cap nhat san pham + so luong")
         const dt = await loadDataToCart(route.params.name)
         setDataCart(dt)
     }
@@ -42,6 +49,7 @@ const Cartt = ({ route }) => {
     }
 
     const updateQuantityFunction = () => {
+        console.log("tang so luong")
         changeCart.forEach((item) => {
             updateQuantity(db, route.params.name, item, item.quantity, item.size)
         })
@@ -60,7 +68,8 @@ const Cartt = ({ route }) => {
         navigation.navigate("account",{name:route.params.name})
     }
 
-    useEffect(() => {
+   const total =()=>{
+
         let totalCost = 0
         processCartData(dataCart).forEach((item) => {
             if (item.size == undefined) {
@@ -74,7 +83,7 @@ const Cartt = ({ route }) => {
             }
         })
         setCostTotal(totalCost)
-    }, [dataCart])
+    }
 
     const processCartData = (dataCart) => {
         let processedCart = []
@@ -106,7 +115,7 @@ const Cartt = ({ route }) => {
                 </View>
                 <View style={styles.price}>
                     <Text style={styles.fontPrice}>Phí vận chuyển</Text>
-                    <Text style={styles.fontPrice}>{feeShip.toLocaleString()}</Text>
+                    <Text style={styles.fontPrice}>{costTotal!=0?feeShip.toLocaleString():0}</Text>
                 </View>
                 <View style={styles.price}>
                     <Text style={styles.fontPrice}>Giảm giá</Text>
@@ -115,7 +124,7 @@ const Cartt = ({ route }) => {
                 <View style={styles.boderBottom1}></View>
                 <View style={styles.price}>
                     <Text style={styles.totalprice}>Tổng thanh toán</Text>
-                    <Text style={styles.totalprice}>{ calcuTotal(costTotal, feeShip, coupon).toLocaleString() }</Text>
+                    <Text style={styles.totalprice}>{costTotal!=0?calcuTotal(costTotal, feeShip, coupon).toLocaleString():0 }</Text>
                 </View>
                 <TouchableOpacity style={styles.buttonCheckout} onPress={(toUpdate)}>
                     <Text style={{ color: 'white', fontSize: 22, fontWeight: 'bold' }}>Đặt hàng</Text>

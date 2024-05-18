@@ -18,6 +18,7 @@ export default function Account({route}) {
         phone : phoneInput
     }
     await setDoc(user,data)
+    navigate.goBack();
     console.log("update shipping success")
     
   };
@@ -27,9 +28,6 @@ export default function Account({route}) {
   return (
     
     <View style={styles.container}>
-        <TouchableOpacity style={styles.backButton} onPress={() => back()}>
-                        <Image source={icons.back} style={styles.backIcon} resizeMode="stretch"/>
-                    </TouchableOpacity>
       <Text style={styles.title}>Cập nhật thông tin người dùng</Text>
       <TextInput
         style={styles.input}

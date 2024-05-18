@@ -3,13 +3,15 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, Alert } fr
 import { images, icons } from '../constants';
 import { deleteItemFromCart } from '../getData';
 import { updateQuantity } from '../updateQuantity';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+
 export const changeCart=[]
 
 const screenWidth = Dimensions.get('window').width
 const CartItem = (props) => {
     const { id, name, size, imgUrl, price, quantity, item, userName } = props
+    const navigation =useNavigation()
     const [quantityValue, setQuantity] = useState(quantity)
-
     useEffect(() => {
         changeCart.slice(0, changeCart.length)
     }, [userName])
@@ -29,15 +31,14 @@ const CartItem = (props) => {
         }
     }
 
-    const deleteItem = async (name, size) => {
-        await deleteItemFromCart(name, size)
-    }
+    // const deleteItem = async (name, size) => {
+    //     await deleteItemFromCart(name, size)
+    // }
 
     // Gọi hàm bất đồng bộ ơ file updateQuantity để lưu
     const updateQuantityFunction = async () => {
         await updateQuantity(db, userName, item, quantityValue, size)
     }
-
     return (
         <TouchableOpacity style={styles.contain}>
             <View style={{ width: '35%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>

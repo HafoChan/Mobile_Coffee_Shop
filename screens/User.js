@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { colors, icons } from '../constants';
-import { setDoc, where,query,doc, collection, getDoc, getDocs } from 'firebase/firestore';
-import { useRoute } from '@react-navigation/native';
+import { setDoc, where, query, doc, collection, getDoc, getDocs } from 'firebase/firestore';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
 
 const User = () => {
   const route = useRoute();
-  console.log(route)
-
-  const [name, setName] = useState('SoHan');
-  const [phone, setPhone] = useState('234234523');
-  const [address, setAddress] = useState('số 1 VVN, Linh Chiểu, Thủ Đức');
+  const navigation = useNavigation();
+  const [name, setName] = useState(route.params.name);
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingPhone, setIsEditingPhone] = useState(false);
@@ -44,29 +44,43 @@ const User = () => {
   const Line = () => {
     return <View style={styles.line} />
   }
-  // useEffect(()=>{
-  //   const getUser =async ()=>{
-  //     const user = doc(db,"User",`${route.params.name}`)
-  //     const docSnap = await getDocs(user);
-  //     console.log(docSnap.data())
   
-     
-  //   }
-  //   getUser()
-  // },[name,address,phone]) đang làm xử lý lấy dữ liệu về
-  
-    const change=async ()=>{
-      const user = doc(db,"User",`${route.params.name}`)
-      const data ={
-        name : name,
-        phone : phone,
-        address : address
+    const getUser = async () => {
+      const docRef = doc(db, "User", `${route.params.name}`);
+      const docSnap = await getDoc(docRef);
+      console.log(docSnap.data())
+      if (docSnap.exists()) {
+        setName((docSnap.data().name))
+        setAddress(docSnap.data().address)
+        setPhone(docSnap.data().phone)
       }
-      await setDoc(user,data)
     }
-    change()
 
-  
+  useFocusEffect(
+    useCallback(() => {
+        getUser()
+    }, [])
+)
+useEffect(()=>{
+  const change = async () => {
+    const user = doc(db, "User", `${route.params.name}`)
+    
+    const data = {
+      name: name,
+      phone: phone,
+      address: address
+    }
+    if (data.phone!=""&&data.address!="")
+      {
+    await setDoc(user, data)
+      }
+  }
+  change()
+},[name,phone,address])
+  const signout =()=>{
+    navigation.navigate("Login")
+  }
+
 
   return (
     <View style={styles.container}>
@@ -74,19 +88,19 @@ const User = () => {
         <Text style={styles.headerText}>Tài khoản</Text>
       </View>
       <View style={styles.profile}>
-        <Image source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlOfwZuuiTfXa2z0_HBPR1AtJbgKYTaDN1Rxjw5HkL2A&s'}}
-            style={styles.profileImage}/>
+        <Image source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlOfwZuuiTfXa2z0_HBPR1AtJbgKYTaDN1Rxjw5HkL2A&s' }}
+          style={styles.profileImage} />
         <Text style={styles.profileName}>{name}</Text>
       </View>
       <View style={styles.details}>
         <View>
           <View style={styles.sectionHeader}>
-            <Image source={icons.account} style={styles.sectionIcon} tintColor={colors.primary}/>
+            <Image source={icons.account} style={styles.sectionIcon} tintColor={colors.primary} />
             <Text style={styles.sectionHeaderText}>Thông tin tài khoản</Text>
           </View>
 
           <View style={styles.sectionContent}>
-            <TouchableOpacity style={styles.sectionRow} onPress={() => { setIsEditingName(true); setInitialName(name); change() }}>
+            <TouchableOpacity style={styles.sectionRow} onPress={() => { setIsEditingName(true); setInitialName(name) }}>
               {isEditingName ? (
                 <TextInput
                   style={styles.textInput}
@@ -98,10 +112,10 @@ const User = () => {
               ) : (
                 <Text style={styles.sectionText}>Tên: {name}</Text>
               )}
-              <Image source={icons.edit} style={styles.editIcon}/>
+              <Image source={icons.edit} style={styles.editIcon}  />
             </TouchableOpacity>
-            <Line/>
-            <TouchableOpacity style={styles.sectionRow} onPress={() => { setIsEditingPhone(true); setInitialPhone(phone); change()}}>
+            <Line />
+            <TouchableOpacity style={styles.sectionRow} onPress={() => { setIsEditingPhone(true); setInitialPhone(phone); }}>
               {isEditingPhone ? (
                 <TextInput
                   style={styles.textInput}
@@ -114,10 +128,10 @@ const User = () => {
               ) : (
                 <Text style={styles.sectionText}>Số điện thoại: {phone}</Text>
               )}
-              <Image source={icons.edit} style={styles.editIcon}/>
+              <Image source={icons.edit} style={styles.editIcon} />
             </TouchableOpacity>
-            <Line/>
-            <TouchableOpacity style={styles.sectionRow} onPress={() => { setIsEditingAddress(true); setInitialAddress(address);change() }}>
+            <Line />
+            <TouchableOpacity style={styles.sectionRow} onPress={() => { setIsEditingAddress(true); setInitialAddress(address); }}>
               {isEditingAddress ? (
                 <TextInput
                   style={[styles.textInput, styles.sectionAddressInput]}
@@ -129,22 +143,22 @@ const User = () => {
               ) : (
                 <Text style={[styles.sectionText, styles.sectionAddress]}>Địa chỉ nhận hàng: {address}</Text>
               )}
-              <Image source={icons.edit} style={styles.editIcon}/>
+              <Image source={icons.edit} style={styles.editIcon} />
             </TouchableOpacity>
-            <Line/>
+            <Line />
           </View>
         </View>
 
         <TouchableOpacity style={styles.sectionRow}>
-          <Image source={icons.orderHistory} style={styles.sectionIcon} tintColor={colors.primary}/>
+          <Image source={icons.orderHistory} style={styles.sectionIcon} tintColor={colors.primary} />
           <Text style={styles.sectionHeaderText}>Lịch sử mua hàng</Text>
         </TouchableOpacity>
-        <Line/>
-        <TouchableOpacity style={styles.sectionRow}>
-          <Image source={icons.logout} style={styles.sectionIcon} tintColor={colors.primary}/>
+        <Line />
+        <TouchableOpacity style={styles.sectionRow} onPress={(signout)}>
+          <Image source={icons.logout} style={styles.sectionIcon} tintColor={colors.primary} />
           <Text style={styles.sectionHeaderText}>Đăng xuất</Text>
         </TouchableOpacity>
-        <Line/>
+        <Line />
       </View>
     </View>
   )
