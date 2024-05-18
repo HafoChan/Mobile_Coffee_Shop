@@ -1,32 +1,33 @@
-import { setDoc, where,query,doc, collection, getDoc, getDocs } from 'firebase/firestore';
+import { setDoc, doc } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert,TouchableOpacity,Image } from 'react-native';
-import { colors, icons } from "../constants";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from "@react-navigation/native";
-
-export default function Account({route}) {
+import { colors } from "../constants";  // Make sure you have a colors file for consistent styling
+import CustomAlert from '../CustomAlert';
+export default function Account({ route }) {
   const [addressInput, setAddress] = useState('');
   const [phoneInput, setPhone] = useState('');
-  const navigate = useNavigation()
-  const handleUpdate = async ({navigation}) => {
-    // Ở đây bạn có thể thực hiện việc gửi thông tin lên server hoặc xử lý khác
-    Alert.alert('Đơn hàng đã được xử lý gửi tới!', `Address: ${addressInput}`);
-    const user = doc(db,"User",`${route.params.name}`)
-    const data ={
-        name : route.params.name,
-        address : addressInput,
-        phone : phoneInput
-    }
-    await setDoc(user,data)
-    navigate.goBack();
-    console.log("update shipping success")
-    
-  };
- const back = () => {
-        navigate.goBack();
+  const [modalVisible, setModalVisible] = useState(false);
+  const navigate = useNavigation();
+
+  const handleUpdate = async () => {
+    const user = doc(db, "User", `${route.params.name}`);
+    const data = {
+      name: route.params.name,
+      address: addressInput,
+      phone: phoneInput
     };
+    await setDoc(user, data);
+    setModalVisible(true);  // Show the custom modal
+    console.log("update shipping success");
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    navigate.goBack();  // Navigate back after closing the modal
+  };
+
   return (
-    
     <View style={styles.container}>
       <Text style={styles.title}>Cập nhật thông tin người dùng</Text>
       <TextInput
@@ -42,7 +43,14 @@ export default function Account({route}) {
         onChangeText={setPhone}
         keyboardType="phone-pad"
       />
-      <Button title="Mua Hàng" onPress={handleUpdate} />
+      <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+        <Text style={styles.buttonText}>Mua Hàng</Text>
+      </TouchableOpacity>
+      <CustomAlert
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        message={`Đơn hàng đã được xử lý gửi tới! Address: ${addressInput}`}
+      />
     </View>
   );
 }
@@ -52,18 +60,33 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
     textAlign: 'center',
+    color: colors.primary,
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: colors.gray,
     borderWidth: 1,
+    borderRadius: 5,
     marginBottom: 20,
     paddingHorizontal: 10,
+    backgroundColor: colors.lightGray,
+  },
+  button: {
+    backgroundColor: colors.primary,
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: colors.white,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
