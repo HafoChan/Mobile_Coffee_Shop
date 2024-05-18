@@ -1,7 +1,8 @@
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { colors, icons, images } from "../constants"
-import { useNavigation,NavigationContainer } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import { findItem } from "../getData";
 
 const Home = ({route}) => {
     const coffeeItems = [
@@ -16,6 +17,8 @@ const Home = ({route}) => {
         { id: '2', icon: icons.iceCream, name: 'Kem' }
     ];
 
+    const [searchKey, setSearchKey] = useState('')
+    const [searchResults, setSearchResults] = useState([])
     const navigation = useNavigation()
 
     const PressCategory = (category, id) => {
@@ -28,7 +31,11 @@ const Home = ({route}) => {
             <Image source={icon} style={styles.itemIcon}/>
             <Text style={styles.itemText} numberOfLines={1} ellipsizeMode='tail'>{name}</Text>
         </TouchableOpacity>
-    );
+    )
+
+    const handleSearch = () => {
+        findItem(searchKey)
+    }
 
     return <View style={styles.containerAll}>
         <View style={styles.container}>
@@ -44,7 +51,14 @@ const Home = ({route}) => {
                 <Text style={styles.searchTitle}>Tìm ngay thức uống yêu thích của bạn!</Text>
                 <View style={styles.searchInputContainer}>
                     <Image source={icons.search} style={styles.searchIcon}/>
-                    <TextInput placeholder="Tìm kiếm" style={styles.searchInput}/>
+                    {/* <TextInput placeholder="Tìm kiếm" style={styles.searchInput}/> */}
+                    <TextInput
+                        placeholder="Tìm kiếm"
+                        style={styles.searchInput}
+                        value={searchKey}
+                        onChangeText={setSearchKey}
+                        onSubmitEditing={handleSearch}
+                    />
                 </View>
             </View>
 

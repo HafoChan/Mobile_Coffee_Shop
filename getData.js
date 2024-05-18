@@ -1,5 +1,6 @@
 import { collection, query, where, getDocs, doc} from "firebase/firestore";
 import db from './firebaseSetting';
+import { useState } from "react";
 
 async function loadDataToCart(name) {
     const q = query(collection(db, "Users"),where("name", "==", name));
@@ -15,6 +16,25 @@ async function loadDataToCart(name) {
     } catch (error) {
         console.error("Error fetching document:", error);
     }
+}
+
+async function findItem(searchKey) {
+    const collections = ["coffehot", "coffecold", "Yogurt", "Other", "Cake", "IceCream"]
+    let results = []
+    const lowerCaseSearchKey = searchKey.toLowerCase() // Chuyển đổi từ khóa tìm kiếm thành chữ thường
+
+    for (const coll of collections) {
+        const q = query(collection(db, coll))
+        const querySnapshot = await getDocs(q)
+        querySnapshot.forEach((doc) => {
+            const description = doc.data().description.toLowerCase() // Chuyển đổi mô tả thành chữ thường
+            if (description.includes(lowerCaseSearchKey)) {
+                results.push({ ...doc.data(), id: doc.id, collection: coll })
+            }
+        })
+    }
+    console.log(results)
+    return results
 }
 
 async function fetchData(category, id) {
@@ -76,4 +96,4 @@ async function itemFavourite(nameUser, item) {
     }
 }
 
-export { loadDataToCart, fetchData, itemFavourite }
+export { loadDataToCart, fetchData, itemFavourite, findItem }

@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     imageContainer: {
-        height: '47%',
+        height: '44%',
     },
     innerImageContainer: {
         width: '100%',

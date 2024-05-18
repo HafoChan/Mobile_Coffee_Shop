@@ -207,8 +207,8 @@ activeTabButton: {
   },
   forgotPasswordText: {
     color: colors.primary,
-    fontSize: 15
+    fontSize: 16
   },
-});
+})
 
-export default App;
+export default App
