@@ -146,6 +146,8 @@ const styles = StyleSheet.create({
     flex:0.4,
     width: "100%",
     height: "100%",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20
   },
   form: {
     flex:0.6,
