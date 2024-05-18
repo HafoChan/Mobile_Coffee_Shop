@@ -1,12 +1,13 @@
 import { Image, Text, TouchableOpacity, View, ScrollView, StyleSheet, Dimensions, TextInput } from "react-native"
 import React, { useState, useEffect, useCallback } from 'react'
+import { doc, updateDoc } from "firebase/firestore"
 import { useFocusEffect } from '@react-navigation/native'
 import { images } from "../constants"
 import { CartItem } from "../components"
 import { loadDataToCart } from "../getData"
 import { changeCart} from "../components/cart"
 import { updateQuantity } from "../updateQuantity"
-import { setDoc, where,query,doc, collection, getDoc, getDocs,updateDoc,deleteField } from 'firebase/firestore';
+import { setDoc,deleteField } from 'firebase/firestore';
 
 const screenWidth = Dimensions.get('window').width
 
@@ -19,7 +20,6 @@ const Cartt = ({ route,navigation }) => {
 
     const toggleTotal = () => {
         // updateQuantityFunction()
-        console.log("tien hanh tinh toan")
         getData()
         setShowTotal(!showTotal)
     }
@@ -28,7 +28,6 @@ const Cartt = ({ route,navigation }) => {
     },[dataCart])
     
     const getData = async () => {
-        console.log("cap nhat san pham + so luong")
         const dt = await loadDataToCart(route.params.name)
         setDataCart(dt)
     }
@@ -49,7 +48,6 @@ const Cartt = ({ route,navigation }) => {
     }
 
     const updateQuantityFunction = () => {
-        console.log("tang so luong")
         changeCart.forEach((item) => {
             updateQuantity(db, route.params.name, item, item.quantity, item.size)
         })
@@ -106,6 +104,40 @@ const Cartt = ({ route,navigation }) => {
         return processedCart
     }
 
+    const handleDeleteItem = async (nameItem, sizeItem) => {
+        console.log(nameItem, sizeItem)
+        
+        const updatedCart = dataCart.map(item => {
+            if (item.name === nameItem) {
+                if (item.size && Array.isArray(item.size)) {
+                    // Cập nhật quantity của size cụ thể về 0
+                    item.size = item.size.map(sizeObj => {
+                        if (sizeObj.sizeName === sizeItem) {
+                            return { ...sizeObj, quantity: 0 }
+                        }
+                        return sizeObj
+                    })
+                } else {
+                    // Cập nhật quantity của sản phẩm không có size về 0
+                    item.quantity = 0
+                }
+            }
+            return item
+        })
+    
+        setDataCart(updatedCart);
+
+        try {
+            const userRef = doc(db, 'Users', route.params.name);
+            await updateDoc(userRef, {
+                cart: updatedCart
+            });
+            console.log("Cart updated successfully!");
+        } catch (error) {
+            console.error("Error updating cart: ", error);
+        }
+    }
+
     const UiTotal = () => {
         return (
             <View>
@@ -151,6 +183,7 @@ const Cartt = ({ route,navigation }) => {
                             id={item.id}
                             item={item}
                             userName={route.params.name}
+                            onDelete={handleDeleteItem}
                         />
                     ))}
                 </ScrollView>

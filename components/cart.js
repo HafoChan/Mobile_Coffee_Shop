@@ -9,8 +9,7 @@ export const changeCart=[]
 
 const screenWidth = Dimensions.get('window').width
 const CartItem = (props) => {
-    const { id, name, size, imgUrl, price, quantity, item, userName } = props
-    const navigation =useNavigation()
+    const { id, name, size, imgUrl, price, quantity, item, userName, onDelete } = props
     const [quantityValue, setQuantity] = useState(quantity)
     useEffect(() => {
         changeCart.slice(0, changeCart.length)
@@ -31,14 +30,18 @@ const CartItem = (props) => {
         }
     }
 
-    // const deleteItem = async (name, size) => {
-    //     await deleteItemFromCart(name, size)
-    // }
+    const deleteItem = async () => {
+        console.log(name + "-------" + size)
+        await onDelete(name, size)
+    }
 
     // Gọi hàm bất đồng bộ ơ file updateQuantity để lưu
     const updateQuantityFunction = async () => {
         await updateQuantity(db, userName, item, quantityValue, size)
     }
+
+    const navigation = useNavigation()
+
     return (
         <TouchableOpacity style={styles.contain}>
             <View style={{ width: '35%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
@@ -49,7 +52,7 @@ const CartItem = (props) => {
                     <Text style={{ color: 'orange', fontSize: 17, fontWeight: '400' }}>
                         {size != undefined ? "Size : " + size : "Other"}
                     </Text>
-                    <TouchableOpacity onPress={() => deleteItem(userName, size)}>
+                    <TouchableOpacity onPress={deleteItem}>
                         <Image source={images.trash} style={{ width: 20, height: 20 }} />
                     </TouchableOpacity>
                 </View>
