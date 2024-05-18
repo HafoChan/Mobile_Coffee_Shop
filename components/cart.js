@@ -7,7 +7,7 @@ export const changeCart=[]
 
 const screenWidth = Dimensions.get('window').width
 const CartItem = (props) => {
-    const { id, name, size, imgUrl, price, quantity, item, userName } = props
+    const { id, name, size, imgUrl, price, quantity, item, userName, onDelete } = props
     const [quantityValue, setQuantity] = useState(quantity)
 
     useEffect(() => {
@@ -29,8 +29,9 @@ const CartItem = (props) => {
         }
     }
 
-    const deleteItem = async (name, size) => {
-        await deleteItemFromCart(name, size)
+    const deleteItem = async () => {
+        console.log(name + "-------" + size)
+        await onDelete(name, size)
     }
 
     // Gọi hàm bất đồng bộ ơ file updateQuantity để lưu
@@ -48,7 +49,7 @@ const CartItem = (props) => {
                     <Text style={{ color: 'orange', fontSize: 17, fontWeight: '400' }}>
                         {size != undefined ? "Size : " + size : "Other"}
                     </Text>
-                    <TouchableOpacity onPress={() => deleteItem(userName, size)}>
+                    <TouchableOpacity onPress={deleteItem}>
                         <Image source={images.trash} style={{ width: 20, height: 20 }} />
                     </TouchableOpacity>
                 </View>

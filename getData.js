@@ -36,24 +36,6 @@ async function fetchData(category, id) {
         console.error("Error fetching document:", error)
     }
 }
-async function deleteItemFromCart(name,size) {
-    const q = query(collection(db, "Users"),where("cart","array-contains","description"))
-    try {
-        const docSnap = await getDocs(q);
-        const docs = [];
-        console.log(docSnap)
-        docSnap.forEach(docdata => {
-            console.log("vao dcccc")
-            console.log(docdata.id, " => ", docdata.data());
-            docdata.data().cart.forEach(item=>{
-                docs.push(item)
-            })
-        });
-        return docs[0]; // Trả về bản ghi đầu tiên (vì bạn đang tìm kiếm theo ID)
-    } catch (error) {
-        console.error("Error fetching document:", error);
-    }
-}
 
 async function itemFavourite(nameUser, item) {
     const q = query(collection(db, "Favourites"), where("name", "==", nameUser))
@@ -94,4 +76,4 @@ async function itemFavourite(nameUser, item) {
     }
 }
 
-export { loadDataToCart, fetchData, itemFavourite}
+export { loadDataToCart, fetchData, itemFavourite }

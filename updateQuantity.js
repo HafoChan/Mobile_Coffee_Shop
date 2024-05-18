@@ -29,7 +29,7 @@ export const updateQuantity = async (db, nameUser, item, quantity, size) => {
         };
 
         await setDoc(load, updatedUser);
-        console.log("Document successfully updated!");
+        //console.log("Document successfully updated!");
     } catch (error) {
         console.error("Error getting user document:", error);
     }

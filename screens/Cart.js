@@ -1,5 +1,6 @@
 import { Image, Text, TouchableOpacity, View, ScrollView, StyleSheet, Dimensions, TextInput } from "react-native"
 import React, { useState, useEffect, useCallback } from 'react'
+import { doc, updateDoc } from "firebase/firestore"
 import { useFocusEffect } from '@react-navigation/native'
 import { images } from "../constants"
 import { CartItem } from "../components"
@@ -97,6 +98,40 @@ const Cartt = ({ route }) => {
         return processedCart
     }
 
+    const handleDeleteItem = async (nameItem, sizeItem) => {
+        console.log(nameItem, sizeItem)
+        
+        const updatedCart = dataCart.map(item => {
+            if (item.name === nameItem) {
+                if (item.size && Array.isArray(item.size)) {
+                    // Cập nhật quantity của size cụ thể về 0
+                    item.size = item.size.map(sizeObj => {
+                        if (sizeObj.sizeName === sizeItem) {
+                            return { ...sizeObj, quantity: 0 }
+                        }
+                        return sizeObj
+                    })
+                } else {
+                    // Cập nhật quantity của sản phẩm không có size về 0
+                    item.quantity = 0
+                }
+            }
+            return item
+        })
+    
+        setDataCart(updatedCart);
+
+        try {
+            const userRef = doc(db, 'Users', route.params.name);
+            await updateDoc(userRef, {
+                cart: updatedCart
+            });
+            console.log("Cart updated successfully!");
+        } catch (error) {
+            console.error("Error updating cart: ", error);
+        }
+    }
+
     const UiTotal = () => {
         return (
             <View>
@@ -142,6 +177,7 @@ const Cartt = ({ route }) => {
                             id={item.id}
                             item={item}
                             userName={route.params.name}
+                            onDelete={handleDeleteItem}
                         />
                     ))}
                 </ScrollView>
