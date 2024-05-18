@@ -20,6 +20,8 @@ const Favourite = () => {
         }, [])
     );
 
+    console.log(data)
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -28,10 +30,7 @@ const Favourite = () => {
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <View style={styles.itemContainer}>
-                    {!data && (
-                        <Text>Đang tải...</Text>
-                    )}
-                    {data !== null && data.map(item => {
+                    {data && data.map(item => {
                         return (<ItemFavourite key={item.name} nameUser={route.params.name} item={item} />);
                     })}
                 </View>

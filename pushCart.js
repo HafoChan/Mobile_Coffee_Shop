@@ -12,8 +12,6 @@ export const pushCart = async (db, nameUser, item, quantity, size) => {
 
             updatedCart.forEach(itemtest => {
                 if (itemtest.name == item.name) {
-                    console.log(itemtest.size)
-                    console.log(item.size)
                     if (itemtest.size == undefined) {
                         itemtest.quantity += quantity;
                     }

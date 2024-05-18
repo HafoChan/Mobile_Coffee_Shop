@@ -55,37 +55,43 @@ async function deleteItemFromCart(name,size) {
     }
 }
 
-async function itemFavourite (nameUser, item) {
-    q = query(collection(db, "Favourites"), where("name", "==", nameUser))
+async function itemFavourite(nameUser, item) {
+    const q = query(collection(db, "Favourites"), where("name", "==", nameUser))
     try {
-        const docSnap = await getDocs(q);
-        const docs = [];
+        const docSnap = await getDocs(q)
+        const docs = []
         docSnap.forEach(doc => {
-            docs.push(doc.data());
-        });
+            docs.push(doc.data())
+        })
 
-        const user = docs[0];
-        const listFavourite = user.ListFavourite;
+        if (docs.length === 0) {
+            console.log("Không tìm thấy người dùng")
+            return null
+        }
 
-        if (docs.length > 0) {
-            if (item) {
-                const favouriteItem = user.ListFavourite.find(favItem => favItem.name == item.name);
-                if (favouriteItem) {
-                    return favouriteItem.liked;
-                } else {
-                    return false;
-                }
+        const user = docs[0]
+        if (!user.ListFavourite) {
+            console.log("Không tìm thấy danh sách yêu thích");
+            return null
+        }
+
+        const listFavourite = user.ListFavourite
+
+        if (item) {
+            const favouriteItem = listFavourite.find(favItem => favItem.name == item.name)
+            if (favouriteItem) {
+                return favouriteItem.liked
             } else {
-                const likedItems = listFavourite.filter(item => item.liked == true)
-                return likedItems
+                return false
             }
         } else {
-            console.log("Không tìm thấy người dùng");
-            return false;
+            const likedItems = listFavourite.filter(item => item.liked == true)
+            return likedItems
         }
     } catch (error) {
-        console.error("Error fetching document:", error);
+        console.error("Error fetching document:", error)
+        return null
     }
 }
 
-export { loadDataToCart, fetchData, itemFavourite}; // Export the fetchData function
+export { loadDataToCart, fetchData, itemFavourite}
