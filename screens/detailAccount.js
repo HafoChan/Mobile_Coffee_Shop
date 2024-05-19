@@ -17,6 +17,7 @@ export default function Account({ route }) {
       address: addressInput,
       phone: phoneInput
     };
+
     await setDoc(user, data);
     setModalVisible(true);  // Show the custom modal
     console.log("update shipping success");

@@ -69,7 +69,6 @@ const App = ({navigation}) => {
           Alert.alert("Password reset email sent!");
         })
         .catch((error) => {
-          console.error(error);
           Alert.alert("Error", error.message);
         });
     };

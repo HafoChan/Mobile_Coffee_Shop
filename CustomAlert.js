@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet ,mode} from 'react-native';
 
 const colors = {
   primary: '#3498db',  // Blue color for primary elements
