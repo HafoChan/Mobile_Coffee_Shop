@@ -1,6 +1,6 @@
 import { setDoc, doc } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { colors } from "../constants";  // Make sure you have a colors file for consistent styling
 import CustomAlert from '../CustomAlert';
@@ -9,7 +9,7 @@ export default function Account({ route }) {
   const [phoneInput, setPhone] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const navigate = useNavigation();
-
+  
   const handleUpdate = async () => {
     const user = doc(db, "User", `${route.params.name}`);
     const data = {
@@ -29,7 +29,7 @@ export default function Account({ route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Cập nhật thông tin người dùng</Text>
+      <Text style={styles.title}>Thông tin khách hàng</Text>
       <TextInput
         style={styles.input}
         placeholder="Địa chỉ"
@@ -49,7 +49,7 @@ export default function Account({ route }) {
       <CustomAlert
         visible={modalVisible}
         onClose={handleCloseModal}
-        message={`Đơn hàng đã được xử lý gửi tới! Address: ${addressInput}`}
+        message={`Đơn hàng đã được xử lý gửi tới! Địa chỉ: ${addressInput}`}
       />
     </View>
   );

@@ -43,8 +43,10 @@ const Cartt = ({ route,navigation }) => {
             return a + b
         else if(a == 0)
             return 0
-        else
+        else if (c > 0)
             return a + b - ((a * c) / 100)
+        else
+            return a + b
     }
 
     const updateQuantityFunction = () => {
@@ -147,11 +149,11 @@ const Cartt = ({ route,navigation }) => {
                 </View>
                 <View style={styles.price}>
                     <Text style={styles.fontPrice}>Phí vận chuyển</Text>
-                    <Text style={styles.fontPrice}>{costTotal!=0?feeShip.toLocaleString():0}</Text>
+                    <Text style={styles.fontPrice}>{costTotal != 0 ? feeShip.toLocaleString() : 0}</Text>
                 </View>
                 <View style={styles.price}>
                     <Text style={styles.fontPrice}>Giảm giá</Text>
-                    <Text style={styles.coupontext}>- {coupon ? coupon : 0}%</Text>
+                    <Text style={styles.coupontext}>- {coupon >0 ? coupon : 0}%</Text>
                 </View>
                 <View style={styles.boderBottom1}></View>
                 <View style={styles.price}>
