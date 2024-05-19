@@ -18,22 +18,31 @@ async function loadDataToCart(name) {
     }
 }
 
+// Chuyển đổi chữ tiếng việt thành viết thường và không dấu
+const removeVietnameseTones = (str) => {
+    str = str.toLowerCase()
+    str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    str = str.replace(/[đĐ]/g, 'd')
+    return str
+}
+
 async function findItem(searchKey) {
     const collections = ["coffehot", "coffecold", "Yogurt", "Other", "Cake", "IceCream"]
     let results = []
-    const lowerCaseSearchKey = searchKey.toLowerCase() // Chuyển đổi từ khóa tìm kiếm thành chữ thường
+    const lowerCaseSearchKey = removeVietnameseTones(searchKey)
 
     for (const coll of collections) {
         const q = query(collection(db, coll))
         const querySnapshot = await getDocs(q)
         querySnapshot.forEach((doc) => {
-            const description = doc.data().description.toLowerCase() // Chuyển đổi mô tả thành chữ thường
-            if (description.includes(lowerCaseSearchKey)) {
-                results.push({ ...doc.data(), id: doc.id, collection: coll })
+            const data = doc.data()
+            const description = removeVietnameseTones(data.description || "")
+            const name = removeVietnameseTones(data.name || "")
+            if (description.includes(lowerCaseSearchKey) || name.includes(lowerCaseSearchKey)) {
+                results.push({ ...data, id: doc.id, collection: coll })
             }
         })
     }
-    console.log(results)
     return results
 }
 

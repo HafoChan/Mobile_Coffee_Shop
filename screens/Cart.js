@@ -153,7 +153,7 @@ const Cartt = ({ route,navigation }) => {
                 </View>
                 <View style={styles.price}>
                     <Text style={styles.fontPrice}>Giảm giá</Text>
-                    <Text style={styles.coupontext}>- {coupon >0 ? coupon : 0}%</Text>
+                    <Text style={styles.coupontext}>- {coupon > 0 ? coupon : 0}%</Text>
                 </View>
                 <View style={styles.boderBottom1}></View>
                 <View style={styles.price}>

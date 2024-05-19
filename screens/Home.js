@@ -18,7 +18,6 @@ const Home = ({route}) => {
     ];
 
     const [searchKey, setSearchKey] = useState('')
-    const [searchResults, setSearchResults] = useState([])
     const navigation = useNavigation()
 
     const PressCategory = (category, id) => {
@@ -34,7 +33,7 @@ const Home = ({route}) => {
     )
 
     const handleSearch = () => {
-        findItem(searchKey)
+        navigation.navigate('Search', { nameUser: route.params.name, searchKey: searchKey })
     }
 
     return <View style={styles.containerAll}>
@@ -51,7 +50,6 @@ const Home = ({route}) => {
                 <Text style={styles.searchTitle}>Tìm ngay thức uống yêu thích của bạn!</Text>
                 <View style={styles.searchInputContainer}>
                     <Image source={icons.search} style={styles.searchIcon}/>
-                    {/* <TextInput placeholder="Tìm kiếm" style={styles.searchInput}/> */}
                     <TextInput
                         placeholder="Tìm kiếm"
                         style={styles.searchInput}

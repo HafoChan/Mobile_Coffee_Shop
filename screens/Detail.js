@@ -16,7 +16,7 @@ const Detail = () => {
     const [quantity, setQuantity] = useState(1)
     const [favourite, setFavourite] = useState(false)
     const [loading, setLoading] = useState(true)
-    const navigate = useNavigation()
+    const navigation = useNavigation()
 
     useEffect(() => {
         const getData = async () => {
@@ -45,7 +45,7 @@ const Detail = () => {
     
 
     const back = () => {
-        navigate.goBack();
+        navigation.goBack();
     };
 
     if (loading) {
